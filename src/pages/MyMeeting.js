@@ -1,4 +1,2 @@
-function MyMeeting() {
-  return <div>MyMeeting</div>;
-}
+const MyMeeting = () => <div>MyMeeting</div>;
 export default MyMeeting;

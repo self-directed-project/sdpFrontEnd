@@ -18,8 +18,30 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'import/no-unresolved': 'off',
     'import/no-anonymous-default-export': 'off',
-    'prettier/prettier': ['error', { endOfLine: 'auto', singleQuote: true }],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+        singleQuote: true
+      }
+    ],
     'react/jsx-filename-extension': 'off',
-    'comma-dangle': 'off'
+    'comma-dangle': 'off',
+    'react/function-component-definition': [
+      'error',
+      {
+        namedComponents: ['function-declaration', 'arrow-function'],
+        unnamedComponents: 'arrow-function'
+      }
+    ],
+    'object-curly-newline': [
+      'error',
+      {
+        ObjectExpression: 'always',
+        ObjectPattern: {
+          multiline: true
+        }
+      }
+    ]
   }
 };
