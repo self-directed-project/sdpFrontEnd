@@ -42,6 +42,7 @@ module.exports = {
           multiline: true
         }
       }
-    ]
+    ],
+    'linebreak-style': ['error', 'windows']
   }
 };
