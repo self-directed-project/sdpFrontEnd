@@ -7,7 +7,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const userInfo = {
     id: 'kyoungwoo',
-    password: 1234
+    password: 123444
   };
   const onIdHandler = (event) => {
     setId(event.currentTarget.value);
@@ -20,7 +20,7 @@ function LoginPage() {
     if (id === userInfo.id && password === String(userInfo.password)) {
       navigate(`/main/${id}`);
     } else {
-      alert('입력 정보가 틀렸습니다.');
+      alert('입력 정보가 틀렸습니다...');
     }
   };
   return (
