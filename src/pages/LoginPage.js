@@ -7,7 +7,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const userInfo = {
     id: 'kyoungwoo',
-    password: 123444
+    password: 1234
   };
   const onIdHandler = (event) => {
     setId(event.currentTarget.value);
