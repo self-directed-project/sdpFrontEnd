@@ -39,9 +39,6 @@ function MeetingroomList() {
       const json = await axios.get('http://localhost:8000/data');
       setMeetingrooms(json.data.meetingrooms);
       isFavorite();
-      console.log(fav);
-      console.log(notFav);
-      console.log(fav[0].name);
     } catch (error) {
       console.log(error);
     }
@@ -53,25 +50,23 @@ function MeetingroomList() {
   return (
     <div>
       <h5>자주 찾는 회의실</h5>
-      {
-        fav.lentgh > 0? (fav.map((meetingroom) => (
+      {fav.map((meetingroom) => (
         <div key={meetingroom.id}>
           <button type="button" id={meetingroom.id}>
             ❤
           </button>
           <span>{meetingroom.name}</span>
         </div>
-      ))): (<hr />
-      notFav.map((meetingroom) => (
+      ))}
+      {fav.length > 0 ? <hr /> : null}
+      {notFav.map((meetingroom) => (
         <div key={meetingroom.id}>
           <button type="button" id={meetingroom.id}>
             ❤
           </button>
           <span>{meetingroom.name}</span>
         </div>
-      )))
-      }
-      
+      ))}
     </div>
   );
 }
