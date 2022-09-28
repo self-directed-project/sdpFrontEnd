@@ -1,4 +1,13 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Spoqa Han Sans Neo';
+}
 .App {
+  width: 400px;
+  height: 300px;
   text-align: center;
 }
 
