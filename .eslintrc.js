@@ -43,6 +43,13 @@ module.exports = {
         }
       }
     ],
-    'linebreak-style': ['error', 'windows']
+    'linebreak-style': ['error', 'windows'],
+    'no-plusplus': [
+      'error',
+      {
+        allowForLoopAfterthoughts: true
+      }
+    ],
+    'no-unused-vars': 'off'
   }
 };
