@@ -5,6 +5,9 @@ import loginLogo from '../img/loginScreen_logo.png';
 import './LoginPage.css';
 
 function LoginPage() {
+  const xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -24,26 +27,17 @@ function LoginPage() {
       password: `${password}`
     };
     axios
-      .post('http://localhost:5000/data', {
+      .post('http://localhost:8080/login', {
         headers: {
-          'Content-Type': 'application/json',
           'Set-cookie': setCookie
         },
-        data: toData
+        username: toData.username,
+        password: toData.password
       })
       .then((res) => {
-        console.log(res);
-        const userId = `${res.data.data.username}`;
-        const userPw = `${res.data.data.password}`;
-        console.log('res.data.userId = ', userId);
-        console.log('res.data.userPw = ', userPw);
-        if (userId === undefined) {
-          alert('입력하신 id 가 일치하지 않습니다.');
-        } else if (userId === null) {
-          // id는 있지만, pw 는 다른 경우 userId = null , msg = undefined
-          console.log('입력하신 비밀번호 가 일치하지 않습니다.');
-          alert('입력하신 비밀번호 가 일치하지 않습니다.');
-        } else if (userId === id) {
+        const { status } = res.data;
+
+        if (status === 200) {
           // id, pw 모두 일치 userId = userId1, msg = undefined
           console.log('로그인 성공');
           navigate(`/main/${id}`);
@@ -51,17 +45,11 @@ function LoginPage() {
         }
       })
       .catch((err) => {
-        console.log(err);
-        const { config } = err;
-        const { status } = err.request;
-        if (err.request) {
-          // 요청이 이루어졌고 서버가 응답했을 경우
-          if (status === 404) {
-            console.log(`${config.url} not found`);
-          }
-          if (status === 500) {
-            console.log('Server error');
-          }
+        const { code } = err.response.data;
+        if (code === 'POSTS_NOT_FOUND_ID') {
+          alert('아이디가 틀렸습니다..');
+        } else if (code === 'POSTS_NOT_FOUND_PW') {
+          alert('패스워드가 틀렸습니다..');
         }
       });
   };
