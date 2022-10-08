@@ -38,7 +38,6 @@ function LoginPage() {
         const { status } = res.data;
 
         if (status === 200) {
-          // id, pw 모두 일치 userId = userId1, msg = undefined
           console.log('로그인 성공');
           navigate(`/main/${id}`);
           sessionStorage.setItem('user_id', id);
