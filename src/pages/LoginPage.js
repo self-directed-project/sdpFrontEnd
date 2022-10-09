@@ -32,7 +32,7 @@ function LoginPage() {
     axios
       .post('http://localhost:8080/login', {
         headers: {
-          'Set-cookie': userCookie
+          'Set-Cookie': cookie.get('JSESSIONID')
         },
         username: toData.username,
         password: toData.password
