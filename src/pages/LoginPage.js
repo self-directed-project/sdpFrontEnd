@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 import loginLogo from '../img/loginScreen_logo.png';
 import './LoginPage.css';
 
+const cookie = new Cookies();
+
 function LoginPage() {
+  let userCookie = '';
   const xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
 
@@ -21,7 +25,6 @@ function LoginPage() {
     }
   }, []);
   const StartLogin = () => {
-    const setCookie = sessionStorage.getItem('user_id');
     const toData = {
       username: `${id}`,
       password: `${password}`
@@ -29,18 +32,20 @@ function LoginPage() {
     axios
       .post('http://localhost:8080/login', {
         headers: {
-          'Set-cookie': setCookie
+          'Set-cookie': userCookie
         },
         username: toData.username,
         password: toData.password
       })
       .then((res) => {
+        console.log(res);
         const { status } = res.data;
 
         if (status === 200) {
+          userCookie = cookie.get('JSESSIONID');
           console.log('로그인 성공');
-          navigate(`/main/${id}`);
-          sessionStorage.setItem('user_id', id);
+          navigate('/main/login');
+          sessionStorage.setItem('user_id', userCookie);
         }
       })
       .catch((err) => {
