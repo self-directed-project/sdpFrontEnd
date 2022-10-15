@@ -1,12 +1,22 @@
 {
-  "data": {
-    "meetingrooms": [
-      { "id": 1, "name": "1회의실", "isFav": false },
-      { "id": 2, "name": "2회의실", "isFav": false },
-      { "id": 3, "name": "3회의실", "isFav": true },
-      { "id": 4, "name": "4회의실", "isFav": true },
-      { "id": 5, "name": "5회의실", "isFav": true },
-      { "id": 6, "name": "6회의실", "isFav": true }
-    ]
-  }
+  "fav": [
+    {
+      "id": 1,
+      "name": "회의실1"
+    },
+    {
+      "id": 2,
+      "name": "회의실2"
+    }
+  ],
+  "nonFav": [
+    {
+      "id": 3,
+      "name": "회의실3"
+    },
+    {
+      "id": 4,
+      "name": "회의실4"
+    }
+  ]
 }
