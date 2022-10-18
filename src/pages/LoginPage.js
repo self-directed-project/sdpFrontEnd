@@ -2,8 +2,97 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
-import loginLogo from '../img/loginScreen_logo.png';
-import './LoginPage.css';
+import styled from 'styled-components';
+import OurMeetingIcon from '../components/OurMeetingIcon';
+
+const Login = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+const LoginHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 40px;
+
+  & div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  & p {
+    font-family: 'Spoqa Han Sans Neo';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 18px;
+    color: #666666;
+    position: absolute;
+    bottom: -15px;
+  }
+`;
+const LoginMain = styled.div`
+  width: 90%;
+  position: relative;
+  margin-bottom: 60px;
+
+  & input {
+    background: transparent;
+    border: none;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.15);
+    padding: 20px 0px 5px 0px;
+    font-size: 10pt;
+    width: 100%;
+    padding-bottom: 20px;
+  }
+  & input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  & input:focus {
+    outline: none;
+    border: none;
+    border-bottom: 1.5px solid #0594ff;
+  }
+
+  & span {
+    position: absolute;
+    right: 0px;
+    bottom: -30px;
+    color: #0594ff;
+    font-family: 'Spoqa Han Sans Neo';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 30px;
+  }
+`;
+const LoginFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  & input {
+    background-color: #0594ff;
+    width: 90%;
+    padding: 15px 0px;
+    border-radius: 10px;
+    color: white;
+    border: none;
+  }
+
+  & div {
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 13px;
+  }
+`;
 
 const cookie = new Cookies();
 
@@ -70,15 +159,15 @@ function LoginPage() {
   };
 
   return (
-    <div className="login">
-      <header className="login-header">
-        <div className="login-header__div">
-          <img src={loginLogo} alt="logo" className="img" />
-          <h1>OUR MEETING</h1>
+    <Login>
+      <LoginHeader>
+        <div>
+          <OurMeetingIcon />
+          <h2>OUR MEETING</h2>
         </div>
-        <p className="login-header__p">회의실 예약 시스템</p>
-      </header>
-      <main className="login-main">
+        <p>회의실 예약 시스템</p>
+      </LoginHeader>
+      <LoginMain>
         <input
           type="text"
           placeholder="아이디"
@@ -95,14 +184,14 @@ function LoginPage() {
           className="login-input"
         />
         <span className="login-main__span">비밀번호 찾기</span>
-      </main>
-      <footer className="login-footer">
+      </LoginMain>
+      <LoginFooter>
         <input type="submit" value="로그인" onClick={onClick} />
         <div>
           <p>Made Our Meeting</p>
         </div>
-      </footer>
-    </div>
+      </LoginFooter>
+    </Login>
   );
 }
 export default LoginPage;
