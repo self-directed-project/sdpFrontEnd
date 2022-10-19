@@ -19,6 +19,7 @@ function MainPage() {
       <Div>
         <MeetingroomList />
         <MyMeetingList />
+        <EntireMeeting />
       </Div>
     </Fragment>
   );

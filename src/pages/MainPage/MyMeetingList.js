@@ -6,7 +6,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 const ViewMeeting = styled.div`
   position: absolute;
   left: 330px;
-  bottom: 0px;
+  bottom: 70px;
   width: 88%;
   background: #ffffff;
   border-radius: 12px;
