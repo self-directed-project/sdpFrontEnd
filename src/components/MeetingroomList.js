@@ -1,73 +1,175 @@
 import axios from 'axios';
+import styled from 'styled-components';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
 import { useEffect, useState } from 'react';
+import OurMeetingIcon from './OurMeetingIcon';
 
 function MeetingroomList() {
-  const [meetingrooms, setMeetingrooms] = useState([]);
-  const [notFav, setNotFav] = useState([]);
   const [fav, setFav] = useState([]);
-  // const [toggle, setToggle] = useState(true);
-
-  /* const onFavorites = (event) => {
-    const eventId = Number(event.target.id);
-    if (meetingrooms[eventId - 1].isFav === true) {
-      setFavorite([...favorite, meetingrooms[eventId - 1].name]);
-      console.log(favorite);
-      setToggle(!toggle);
-    } else {
-      favorite.filter((fav) => fav.id !== eventId);
-      console.log(favorite);
-      setToggle(!toggle);
-    }
-  }; */
-
-  const isFavorite = () => {
-    const favArr = [];
-    const notFavArr = [];
-    for (let i = 0; i < meetingrooms.length; i++) {
-      if (meetingrooms[i].isFav === false) {
-        favArr.push(meetingrooms[i]);
-      } else {
-        notFavArr.push(meetingrooms[i]);
-      }
-    }
-    setFav(favArr);
-    setNotFav(notFavArr);
+  const [nonFav, setNonFav] = useState([]);
+  const params = {
+    memberId: 1,
+    meetingRoomId: 1
   };
-
   const getMeetingroom = async () => {
     try {
-      const json = await axios.get('http://localhost:8000/data');
-      setMeetingrooms(json.data.meetingrooms);
-      isFavorite();
+      const res = await axios.get('http://localhost:8080/meeting-rooms', {
+        params
+      });
+      setFav(res.data.fav);
+      setNonFav(res.data.nonFav);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const postMeetingroom = async (memberId, meetingRoomId) => {
+    try {
+      axios
+        .post('http://localhost:8080/meeting-rooms', {
+          memberId: `${memberId}`,
+          meetingRoomId: `${meetingRoomId}`
+        })
+        .then((res) => {
+          getMeetingroom();
+          console.log(res);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleBtn = (event) => {
+    const meetingRoomId = event.target.id;
+    postMeetingroom(params.memberId, meetingRoomId);
   };
 
   useEffect(() => {
     getMeetingroom();
   }, []);
   return (
-    <div>
-      <h5>자주 찾는 회의실</h5>
+    <List>
+      <MainTitle>
+        <OurMeetingIcon />
+        <h2>OUR MEETING</h2>
+      </MainTitle>
+      <ViewMeetingBtn type="button">내 회의 보기</ViewMeetingBtn>
+      <Title>자주 찾는 회의실</Title>
       {fav.map((meetingroom) => (
-        <div key={meetingroom.id}>
-          <button type="button" id={meetingroom.id}>
-            ❤
-          </button>
-          <span>{meetingroom.name}</span>
-        </div>
+        <Element key={meetingroom.id}>
+          <ElementChild1>
+            <FavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
+              StarIcon
+            </FavBtn>
+            <span>{meetingroom.name}</span>
+          </ElementChild1>
+          <ElementChild2>
+            <Dot />
+          </ElementChild2>
+        </Element>
       ))}
-      {fav.length > 0 ? <hr /> : null}
-      {notFav.map((meetingroom) => (
-        <div key={meetingroom.id}>
-          <button type="button" id={meetingroom.id}>
-            ❤
-          </button>
-          <span>{meetingroom.name}</span>
-        </div>
+      {fav.length !== 0 || fav.length === nonFav.length ? <Hr /> : null}
+      {nonFav.map((meetingroom) => (
+        <Element key={meetingroom.id}>
+          <ElementChild1>
+            <NonFavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
+              StarIcon
+            </NonFavBtn>
+            <span>{meetingroom.name}</span>
+          </ElementChild1>
+          <ElementChild2>
+            <Dot />
+          </ElementChild2>
+        </Element>
       ))}
-    </div>
+    </List>
   );
 }
+const List = styled.div`
+  background-color: white;
+  width: 250px;
+  height: 100vh;
+  padding: 20px;
+  font-family: 'Spoqa Han Sans Neo';
+  font-weight: 400;
+`;
+
+const MainTitle = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 30px 0px 30px 23px;
+  font-family: 'Spoqa Han Sans Neo';
+  font-weight: 800;
+`;
+const ViewMeetingBtn = styled.button`
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 15px 60px;
+  border-radius: 10px;
+  border: solid 1.9px #0594ff;
+  color: #0594ff;
+  background-color: white;
+  font-family: 'Spoqa Han Sans Neo';
+  font-weight: 500;
+  font-size: 16px;
+`;
+const Title = styled.h5`
+  margin-top: 54px;
+  margin-bottom: 24px;
+  margin-left: 28px;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 500;
+`;
+const Hr = styled.hr`
+  border: 1px solid #dee2ec;
+  margin: 8px 14px 8px 14px;
+`;
+
+const Element = styled.div`
+  display: flex;
+  width: 250px;
+  height: 50px;
+  align-items: center;
+  color: #333333;
+  font-weight: 400;
+  justify-content: space-between;
+  &:hover {
+    border-left: solid 3px #0594ff;
+    background-color: #f9fdff;
+    & > span {
+      color: #0594ff;
+    }
+  }
+`;
+
+const ElementChild1 = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ElementChild2 = styled.div`
+  margin-right: 14px;
+  color: #a4b9d2;
+  font-size: xx-small;
+`;
+const FavBtn = styled(StarRoundedIcon)`
+  color: #0594ff;
+  margin-left: 28px;
+  margin-right: 11px;
+`;
+
+const NonFavBtn = styled(StarOutlineRoundedIcon)`
+  color: #dee2ec;
+  margin-left: 28px;
+  margin-right: 11px;
+  font-size: 16px;
+`;
+
+const Dot = styled(MoreHorizSharpIcon)`
+  font-size: xx-small;
+`;
+
 export default MeetingroomList;

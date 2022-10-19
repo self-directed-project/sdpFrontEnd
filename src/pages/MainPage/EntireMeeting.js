@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import './MainPage.css';
 
-function MainPage() {
+function EntireMeeting() {
   const [listArr, setListArr] = useState([]);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [curCheck, setCurCheck] = useState(false);
@@ -49,7 +48,7 @@ function MainPage() {
     });
   }, []);
   return (
-    <div className="view-meeting">
+    <div className="view-meeting__entire">
       <div className="view-meeting__header">
         <h3>나의 예약</h3>
         <button type="button" onClick={deleteList}>
@@ -101,4 +100,4 @@ function MainPage() {
     </div>
   );
 }
-export default MainPage;
+export default EntireMeeting;
