@@ -79,6 +79,10 @@ const LoginFooter = styled.div`
   align-items: center;
   width: 100%;
 
+  & div {
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 13px;
+  }
   & input {
     background-color: #0594ff;
     width: 90%;
@@ -86,11 +90,6 @@ const LoginFooter = styled.div`
     border-radius: 10px;
     color: white;
     border: none;
-  }
-
-  & div {
-    color: rgba(0, 0, 0, 0.3);
-    font-size: 13px;
   }
 `;
 
@@ -157,41 +156,49 @@ function LoginPage() {
   const onClick = () => {
     StartLogin();
   };
+  const onSubmit = (e) => {
+    e.prventDefault();
+    StartLogin();
+    setId('');
+    setPassword('');
+  };
 
   return (
-    <Login>
-      <LoginHeader>
-        <div>
-          <OurMeetingIcon />
-          <h2>OUR MEETING</h2>
-        </div>
-        <p>회의실 예약 시스템</p>
-      </LoginHeader>
-      <LoginMain>
-        <input
-          type="text"
-          placeholder="아이디"
-          onChange={onIdHandler}
-          value={id}
-          className="login-input"
-        />
-        <br />
-        <input
-          type="text"
-          placeholder="비밀번호"
-          onChange={onPasswordHandler}
-          value={password}
-          className="login-input"
-        />
-        <span className="login-main__span">비밀번호 찾기</span>
-      </LoginMain>
-      <LoginFooter>
-        <input type="submit" value="로그인" onClick={onClick} />
-        <div>
-          <p>Made Our Meeting</p>
-        </div>
-      </LoginFooter>
-    </Login>
+    <form onSubmit={onSubmit}>
+      <Login>
+        <LoginHeader>
+          <div>
+            <OurMeetingIcon />
+            <h2>OUR MEETING</h2>
+          </div>
+          <p>회의실 예약 시스템</p>
+        </LoginHeader>
+        <LoginMain>
+          <input
+            type="text"
+            placeholder="아이디"
+            onChange={onIdHandler}
+            value={id}
+            className="login-input"
+          />
+          <br />
+          <input
+            type="password"
+            placeholder="비밀번호"
+            onChange={onPasswordHandler}
+            value={password}
+            className="login-input"
+          />
+          <span className="login-main__span">비밀번호 찾기</span>
+        </LoginMain>
+        <LoginFooter>
+          <input type="submit" onClick={onClick} value="로그인" />
+          <div>
+            <p>Made Our Meeting</p>
+          </div>
+        </LoginFooter>
+      </Login>
+    </form>
   );
 }
 export default LoginPage;
