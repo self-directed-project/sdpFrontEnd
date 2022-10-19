@@ -118,7 +118,7 @@ function LoginPage() {
       password: `${password}`
     };
     axios
-      .post('http://localhost:8080/login', {
+      .post('https://sdp-ourmeeting.herokuapp.com/login', {
         headers: {
           'Set-Cookie': cookie.get('JSESSIONID')
         },
@@ -157,7 +157,7 @@ function LoginPage() {
     StartLogin();
   };
   const onSubmit = (e) => {
-    e.prventDefault();
+    e.preventDefault();
     StartLogin();
     setId('');
     setPassword('');

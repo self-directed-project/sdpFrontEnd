@@ -6,7 +6,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 const ViewMeeting = styled.div`
   position: absolute;
   left: 330px;
-  bottom: 70px;
+  bottom: 500px;
   width: 88%;
   background: #ffffff;
   border-radius: 12px;
@@ -124,7 +124,7 @@ function MyMeetingList() {
   };
   const deleteList = () => {
     axios
-      .post('http://localhost:7070/data', {
+      .post('http://localhost:8000/data', {
         data: checkedArr
       })
       .then((res) => {
@@ -135,14 +135,14 @@ function MyMeetingList() {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:6060/data').then((res) => {
+    axios.get('http://localhost:8000/data').then((res) => {
       setListArr(res.data.meetingrooms);
     });
   }, []);
   return (
     <ViewMeeting>
       <ViewMeetingHeader>
-        <h3>나의 예약</h3>
+        <h3>전체 일정</h3>
         <button type="button" onClick={deleteList}>
           <DeleteDiv>
             <DeleteIcon />

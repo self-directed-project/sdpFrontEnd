@@ -1,13 +1,13 @@
-import MeetingroomList from '../components/MeetingroomList';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
+import MeetingroomList from '../components/MeetingroomList';
 
 const cookie = new Cookies();
 
 function MainPage() {
   const onClick = () => {
     axios
-      .get('http://localhost:8080/main', {
+      .get('https://sdp-ourmeeting.herokuapp.com/main', {
         headers: {
           Authorization: `Bearer ${cookie.get('JSESSIONID')}`
         }

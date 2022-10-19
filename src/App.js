@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import MainPage from './pages/MainPage/MainPage';
-import MyMeeting from './pages/MyMeeting';
+import MainPage from './pages/MainPage';
+import MyMeetingList from './pages/temporaryPage/MainPage';
 import MeetingroomList from './components/MeetingroomList';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/main/login" element={<MainPage />} />
-          <Route path="/mymeeting" element={<MyMeeting />} />
+          <Route path="/mymeeting" element={<MyMeetingList />} />
           <Route path="/meeting-rooms" element={<MeetingroomList />} />
         </Routes>
       </BrowserRouter>

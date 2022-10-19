@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
-import MyMeetingList from './MyMeetingList';
+import MyMeetingList from '../../components/MyMeetingList';
 import MeetingroomList from '../../components/MeetingroomList';
-import EntireMeeting from './EntireMeeting';
-import MeetingList from './MeetingList';
+import EntireMeeting from '../../components/EntireMeeting';
 
 const Div = styled.div`
   margin: 0;
