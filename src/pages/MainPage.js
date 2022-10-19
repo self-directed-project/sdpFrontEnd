@@ -1,7 +1,9 @@
+import MeetingroomList from '../components/MeetingroomList';
+
 function MainPage() {
   return (
     <div>
-      <h5>자주 찾는 회의실</h5>
+      <MeetingroomList />
     </div>
   );
 }

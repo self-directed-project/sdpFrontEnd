@@ -4,6 +4,7 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import OurMeetingIcon from './OurMeetingIcon';
 
 function MeetingroomList() {
@@ -13,6 +14,7 @@ function MeetingroomList() {
     memberId: 1,
     meetingRoomId: 1
   };
+  const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
       const res = await axios.get('http://localhost:8080/meeting-rooms', {
@@ -33,7 +35,8 @@ function MeetingroomList() {
           meetingRoomId: `${meetingRoomId}`
         })
         .then((res) => {
-          getMeetingroom();
+          setFav(res.data.fav);
+          setNonFav(res.data.nonFav);
           console.log(res);
         });
     } catch (error) {
@@ -55,7 +58,9 @@ function MeetingroomList() {
         <OurMeetingIcon />
         <h2>OUR MEETING</h2>
       </MainTitle>
-      <ViewMeetingBtn type="button">내 회의 보기</ViewMeetingBtn>
+      <ViewMeetingBtn type="button" onClick={() => navigate('/mymeeting')}>
+        내 회의 보기
+      </ViewMeetingBtn>
       <Title>자주 찾는 회의실</Title>
       {fav.map((meetingroom) => (
         <Element key={meetingroom.id}>
@@ -70,7 +75,7 @@ function MeetingroomList() {
           </ElementChild2>
         </Element>
       ))}
-      {fav.length !== 0 || fav.length === nonFav.length ? <Hr /> : null}
+      {fav.length === 0 || nonFav.length === 0 ? null : <Hr />}
       {nonFav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
@@ -111,6 +116,12 @@ const ViewMeetingBtn = styled.button`
   font-family: 'Spoqa Han Sans Neo';
   font-weight: 500;
   font-size: 16px;
+  &:hover {
+    background-color: #f9fdff;
+    & > span {
+      color: #0594ff;
+    }
+  }
 `;
 const Title = styled.h5`
   margin-top: 54px;
