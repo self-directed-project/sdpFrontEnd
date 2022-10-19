@@ -1,0 +1,42 @@
+body {
+  background-color: #f1f5f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.view-meeting {
+  width: 1121px;
+  height: 392px;
+  background: #ffffff;
+  border-radius: 12px;
+}
+.view-meeting__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+.view-meeting__list {
+  width: 95%;
+  padding: 10px;
+}
+.view-meeting__list__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.view-meeting__list__info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: aliceblue;
+}
+.addList {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: white;
+}

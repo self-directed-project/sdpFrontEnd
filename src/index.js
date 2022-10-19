@@ -6,13 +6,12 @@ import axios from 'axios';
 import { Provider } from 'react-redux';
 import App from './App';
 import store from './store/root';
-import './index.css';
 
 axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <CookiesProvider >
+  <CookiesProvider>
     <React.StrictMode>
       <App />
     </React.StrictMode>

@@ -1,22 +1,48 @@
 {
-  "fav": [
-    {
-      "id": 1,
-      "name": "회의실1"
-    },
-    {
-      "id": 2,
-      "name": "회의실2"
-    }
-  ],
-  "nonFav": [
-    {
-      "id": 3,
-      "name": "회의실3"
-    },
-    {
-      "id": 4,
-      "name": "회의실4"
-    }
-  ]
+  "data": {
+    "meetingrooms": [
+      {
+        "meetingName": "개발1팀 1주차 회의",
+        "name": "1회의실",
+        "meetingTime": "2시간",
+        "date": "22.03.31 : 11:00",
+        "Founder": "홍길동"
+      },
+      {
+        "meetingName": "개발1팀 1주차 회의",
+        "name": "2회의실",
+        "meetingTime": "2시간",
+        "date": "22.03.31 : 11:00",
+        "Founder": "홍길동"
+      },
+      {
+        "meetingName": "개발1팀 1주차 회의",
+        "name": "3회의실",
+        "meetingTime": "2시간",
+        "date": "22.03.31 : 11:00",
+        "Founder": "홍길동"
+      },
+      {
+        "meetingName": "개발1팀 1주차 회의",
+        "name": "4회의실",
+        "meetingTime": "2시간",
+        "date": "22.03.31 : 11:00",
+        "Founder": "홍길동"
+      },
+      {
+        "meetingName": "개발1팀 1주차 회의",
+        "name": "5회의실",
+        "meetingTime": "2시간",
+        "date": "22.03.31 : 11:00",
+        "Founder": "홍길동"
+      },
+      {
+        "meetingName": "개발1팀 1주차 회의",
+        "name": "6회의실",
+        "meetingTime": "2시간",
+        "date": "22.03.31 : 11:00",
+        "Founder": "홍길동"
+      }
+    ]
+  }
 }
