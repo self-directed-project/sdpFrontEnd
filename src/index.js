@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { CookiesProvider } from 'react-cookie';
+import './index.css';
 import axios from 'axios';
 import { Provider } from 'react-redux';
 import App from './App';
@@ -10,7 +12,9 @@ axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <CookiesProvider >
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </CookiesProvider>
 );
