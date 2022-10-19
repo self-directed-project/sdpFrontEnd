@@ -1,3 +1,4 @@
+import MeetingroomList from '../components/MeetingroomList';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 
@@ -15,10 +16,7 @@ function MainPage() {
   };
   return (
     <div>
-      <h5>자주 찾는 회의실</h5>
-      <button type="button" onClick={onClick}>
-        Clicked
-      </button>
+      <MeetingroomList />
     </div>
   );
 }

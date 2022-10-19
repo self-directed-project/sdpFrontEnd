@@ -37,7 +37,6 @@ module.exports = {
     'object-curly-newline': [
       'error',
       {
-        ObjectExpression: 'always',
         ObjectPattern: {
           multiline: true
         }
@@ -50,6 +49,8 @@ module.exports = {
         allowForLoopAfterthoughts: true
       }
     ],
-    'no-unused-vars': 'off'
+    'no-unused-vars': 'off',
+    'import/prefer-default-export': 'off',
+    'no-param-reassign': 'off'
   }
 };
