@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
+import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OurMeetingIcon from './OurMeetingIcon';
@@ -17,9 +18,12 @@ function MeetingroomList() {
   const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/meeting-rooms', {
-        params
-      });
+      const res = await axios.get(
+        'https://sdp-ourmeeting.herokuapp.com/meeting-rooms',
+        {
+          params
+        }
+      );
       setFav(res.data.fav);
       setNonFav(res.data.nonFav);
     } catch (error) {
@@ -28,25 +32,23 @@ function MeetingroomList() {
   };
 
   const postMeetingroom = async (memberId, meetingRoomId) => {
-    try {
-      axios
-        .post('http://localhost:8080/meeting-rooms', {
-          memberId: `${memberId}`,
-          meetingRoomId: `${meetingRoomId}`
-        })
-        .then((res) => {
-          setFav(res.data.fav);
-          setNonFav(res.data.nonFav);
-          console.log(res);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    axios
+      .post('http://sdp-ourmeeting.herokuapp.com/meeting-rooms', {
+        memberId: `${memberId}`,
+        meetingRoomId: `${meetingRoomId}`
+      })
+      .then((res) => {
+        setFav(res.data.fav);
+        setNonFav(res.data.nonFav);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleBtn = (event) => {
-    const meetingRoomId = event.target.id;
-    postMeetingroom(params.memberId, meetingRoomId);
+    const { id } = event.currentTarget;
+    postMeetingroom(params.memberId, id);
   };
 
   useEffect(() => {
@@ -65,9 +67,14 @@ function MeetingroomList() {
       {fav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <FavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
-              StarIcon
-            </FavBtn>
+            <IconButton
+              id={meetingroom.id}
+              onClick={handleBtn}
+              disableElevation
+              disableRipple
+            >
+              <FavBtn id={meetingroom.id} onClick={handleBtn} />
+            </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
           <ElementChild2>
@@ -79,9 +86,14 @@ function MeetingroomList() {
       {nonFav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <NonFavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
-              StarIcon
-            </NonFavBtn>
+            <IconButton
+              id={meetingroom.id}
+              onClick={handleBtn}
+              disableElevation
+              disableRipple
+            >
+              <NonFavBtn />
+            </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
           <ElementChild2>
@@ -92,6 +104,7 @@ function MeetingroomList() {
     </List>
   );
 }
+
 const List = styled.div`
   width: 250px;
   font-family: 'Spoqa Han Sans Neo';
