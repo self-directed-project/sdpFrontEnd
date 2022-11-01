@@ -67,13 +67,8 @@ function MeetingroomList() {
       {fav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <IconButton
-              id={meetingroom.id}
-              onClick={handleBtn}
-              disableElevation
-              disableRipple
-            >
-              <FavBtn id={meetingroom.id} onClick={handleBtn} />
+            <IconButton id={meetingroom.id} onClick={handleBtn} disableRipple>
+              <FavBtn />
             </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
