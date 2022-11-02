@@ -51,13 +51,6 @@ module.exports = {
     ],
     'no-unused-vars': 'off',
     'import/prefer-default-export': 'off',
-    'no-param-reassign': 'off',
-    'logical-assignment-operators': [
-      'error',
-      'always',
-      {
-        enforceForIfStatements: false
-      }
-    ]
+    'no-param-reassign': 'off'
   }
 };

@@ -14,7 +14,6 @@ export const sendingSession = () => {
     })
     .then((res) => console.log(res));
 };
-
 function MainPage() {
   useEffect(() => {
     sendingSession();
