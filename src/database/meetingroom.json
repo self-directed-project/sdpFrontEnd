@@ -6,21 +6,24 @@
         "name": "1회의실",
         "meetingTime": "2시간",
         "date": "22.03.31 : 11:00",
-        "Founder": "홍길동"
+        "Founder": "홍길동",
+        "id": 1
       },
       {
         "meetingName": "개발1팀 1주차 회의",
         "name": "2회의실",
         "meetingTime": "2시간",
         "date": "22.03.31 : 11:00",
-        "Founder": "홍길동"
+        "Founder": "홍길동",
+        "id": 2
       },
       {
         "meetingName": "개발1팀 1주차 회의",
         "name": "3회의실",
         "meetingTime": "2시간",
         "date": "22.03.31 : 11:00",
-        "Founder": "홍길동"
+        "Founder": "홍길동",
+        "id": 3
       }
     ]
   }

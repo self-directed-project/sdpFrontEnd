@@ -3,6 +3,120 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
+function MyMeetingList() {
+  const [listArr, setListArr] = useState([]);
+  const [isCheckAll, setIsCheckAll] = useState(false);
+  const [checkedArr, setCheckedArr] = useState([]);
+
+  const changeAllCheck = (e) => {
+    console.log(listArr);
+    if (isCheckAll === false) {
+      const allArr = listArr.map((item) => item.name);
+      setCheckedArr(allArr);
+      setIsCheckAll(true);
+      for (let i = 0; i < listArr.length; i++) {
+        listArr[i].checked = true;
+      }
+      console.log(listArr);
+    } else {
+      setCheckedArr([]);
+      setIsCheckAll(false);
+      for (let i = 0; i < listArr.length; i++) {
+        listArr[i].checked = false;
+      }
+      console.log(listArr);
+    }
+  };
+
+  const checkingCheckedBox = (name, e) => {
+    if (e.target.checked === false) {
+      const newArr = checkedArr.filter((item) => item !== name);
+      setCheckedArr(newArr);
+    } else {
+      setCheckedArr((prev) => [...prev, name]);
+    }
+    if (isCheckAll === true) {
+      setIsCheckAll(false);
+      e.target.checked = false;
+    }
+  };
+  const deleteList = () => {
+    axios
+      .post('http://localhost:7070/data', {
+        data: checkedArr
+      })
+      .then((res) => {
+        console.log(res.data);
+      });
+    setIsCheckAll(false);
+    setCheckedArr([]);
+  };
+
+  useEffect(() => {
+    axios.get('http://localhost:6060/data').then((res) => {
+      setListArr(res.data.meetingrooms);
+      console.log(res.data.meetingrooms);
+    });
+  }, []);
+  return (
+    <ViewMeeting>
+      <ViewMeetingHeader>
+        <h3>나의 예약</h3>
+        <button type="button" onClick={deleteList}>
+          <DeleteDiv>
+            <DeleteIcon />
+            <span>삭제</span>
+          </DeleteDiv>
+        </button>
+      </ViewMeetingHeader>
+      <ListTable>
+        <thead>
+          <ViewMeetingListTr>
+            <td>
+              <input
+                type="checkbox"
+                onChange={(e) => changeAllCheck(e.target.checked)}
+                checked={checkedArr.length === listArr.length}
+              />
+            </td>
+            <td>회의명</td>
+            <td>회의 일시</td>
+            <td>회의 시간</td>
+            <td>회의실</td>
+            <td>개설자</td>
+          </ViewMeetingListTr>
+        </thead>
+        <ColorChangeBody>
+          {console.log(isCheckAll)}
+          {console.log(checkedArr)}
+          {listArr.map((item) => (
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  onClick={(e) => {
+                    checkingCheckedBox(item.name, e);
+                  }}
+                  checked={!!checkedArr.includes(item.name)}
+                />
+              </td>
+              <td>
+                <MeetingRoomColorDiv>
+                  <MeetingRoomColor />
+                  <span>{item.meetingName}</span>
+                </MeetingRoomColorDiv>
+              </td>
+              <td>{item.date}</td>
+              <MeetingTime>{item.meetingTime}</MeetingTime>
+              <td>{item.name}</td>
+              <td>{item.Founder}</td>
+            </tr>
+          ))}
+        </ColorChangeBody>
+      </ListTable>
+    </ViewMeeting>
+  );
+}
 const ViewMeeting = styled.div`
   position: absolute;
   left: 330px;
@@ -92,117 +206,4 @@ const DeleteDiv = styled.div`
   align-items: center;
   justify-content: center;
 `;
-
-function MyMeetingList() {
-  const [listArr, setListArr] = useState([]);
-  const [isCheckAll, setIsCheckAll] = useState(false);
-  const [curCheck, setCurCheck] = useState(false);
-  const [checkedArr, setCheckedArr] = useState([]);
-
-  const changeAllCheck = (e) => {
-    if (e.target.checked) {
-      const allArr = listArr.map((item) => item.name);
-      setCheckedArr(allArr);
-      setIsCheckAll(true);
-    } else {
-      setCheckedArr([]);
-      setIsCheckAll(false);
-    }
-  };
-
-  const checkingCheckedBox = (name, e) => {
-    if (e.target.checked === false) {
-      const newArr = checkedArr.filter((item) => item !== name);
-      setCheckedArr(newArr);
-    } else {
-      setCheckedArr((prev) => [...prev, name]);
-    }
-    if (checkedArr.length === listArr.length) {
-      setCurCheck(false);
-    }
-    console.log(name);
-  };
-  const deleteList = () => {
-    axios
-      .post('http://localhost:8000/data', {
-        data: checkedArr
-      })
-      .then((res) => {
-        console.log(res.data);
-      });
-    setIsCheckAll(false);
-    setCheckedArr([]);
-  };
-
-  useEffect(() => {
-    axios.get('http://localhost:8000/data').then((res) => {
-      setListArr(res.data.meetingrooms);
-    });
-  }, []);
-  return (
-    <ViewMeeting>
-      <ViewMeetingHeader>
-        <h3>나의 예약</h3>
-        <button type="button" onClick={deleteList}>
-          <DeleteDiv>
-            <DeleteIcon />
-            <span>삭제</span>
-          </DeleteDiv>
-        </button>
-      </ViewMeetingHeader>
-      <ListTable>
-        <thead>
-          <ViewMeetingListTr>
-            <td>
-              {isCheckAll ? (
-                <input type="checkbox" onClick={changeAllCheck} checked />
-              ) : (
-                <input type="checkbox" onClick={changeAllCheck} />
-              )}
-            </td>
-            <td>회의명</td>
-            <td>회의 일시</td>
-            <td>회의 시간</td>
-            <td>회의실</td>
-            <td>개설자</td>
-          </ViewMeetingListTr>
-        </thead>
-        <ColorChangeBody>
-          {listArr.map((item) => (
-            <tr>
-              <td>
-                {isCheckAll ? (
-                  <input
-                    type="checkbox"
-                    onClick={(e) => {
-                      checkingCheckedBox(item.name, e);
-                    }}
-                    checked
-                  />
-                ) : (
-                  <input
-                    type="checkbox"
-                    onClick={(e) => {
-                      checkingCheckedBox(item.name, e);
-                    }}
-                  />
-                )}
-              </td>
-              <td>
-                <MeetingRoomColorDiv>
-                  <MeetingRoomColor />
-                  <span>{item.meetingName}</span>
-                </MeetingRoomColorDiv>
-              </td>
-              <td>{item.date}</td>
-              <MeetingTime>{item.meetingTime}</MeetingTime>
-              <td>{item.name}</td>
-              <td>{item.Founder}</td>
-            </tr>
-          ))}
-        </ColorChangeBody>
-      </ListTable>
-    </ViewMeeting>
-  );
-}
 export default MyMeetingList;

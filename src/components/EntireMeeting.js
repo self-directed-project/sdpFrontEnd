@@ -95,47 +95,31 @@ const DeleteDiv = styled.div`
 
 function MyMeetingList() {
   const [listArr, setListArr] = useState([]);
-  const [isCheckAll, setIsCheckAll] = useState(false);
-  const [curCheck, setCurCheck] = useState(false);
-  const [checkedArr, setCheckedArr] = useState([]);
+  const [checkItems, setCheckItems] = useState([]);
 
-  const changeAllCheck = (e) => {
-    if (e.target.checked) {
+  const handleSingleCheck = (checked, id) => {
+    if (checked) {
+      // 단일 선택 시 체크된 아이템을 배열에 추가
+      setCheckItems((prev) => [...prev, id]);
+    } else {
+      // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
+      setCheckItems(checkItems.filter((el) => el !== id));
+    }
+  };
+
+  const handleAllCheck = (checked) => {
+    if (checked) {
+      // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
       const allArr = listArr.map((item) => item.name);
-      setCheckedArr(allArr);
-      setIsCheckAll(true);
+      setCheckItems(allArr);
     } else {
-      setCheckedArr([]);
-      setIsCheckAll(false);
+      // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
+      setCheckItems([]);
     }
-  };
-
-  const checkingCheckedBox = (name, e) => {
-    if (e.target.checked === false) {
-      const newArr = checkedArr.filter((item) => item !== name);
-      setCheckedArr(newArr);
-    } else {
-      setCheckedArr((prev) => [...prev, name]);
-    }
-    if (checkedArr.length === listArr.length) {
-      setCurCheck(false);
-    }
-    console.log(name);
-  };
-  const deleteList = () => {
-    axios
-      .post('http://localhost:8000/data', {
-        data: checkedArr
-      })
-      .then((res) => {
-        console.log(res.data);
-      });
-    setIsCheckAll(false);
-    setCheckedArr([]);
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8000/data').then((res) => {
+    axios.get('http://localhost:6060/data').then((res) => {
       setListArr(res.data.meetingrooms);
     });
   }, []);
@@ -143,7 +127,7 @@ function MyMeetingList() {
     <ViewMeeting>
       <ViewMeetingHeader>
         <h3>전체 일정</h3>
-        <button type="button" onClick={deleteList}>
+        <button type="button">
           <DeleteDiv>
             <DeleteIcon />
             <span>삭제</span>
@@ -154,11 +138,11 @@ function MyMeetingList() {
         <thead>
           <ViewMeetingListTr>
             <td>
-              {isCheckAll ? (
-                <input type="checkbox" onClick={changeAllCheck} checked />
-              ) : (
-                <input type="checkbox" onClick={changeAllCheck} />
-              )}
+              <input
+                type="checkbox"
+                onChange={(e) => handleAllCheck(e.target.checked)}
+                checked={checkItems.length === listArr.length}
+              />
             </td>
             <td>회의명</td>
             <td>회의 일시</td>
@@ -168,25 +152,15 @@ function MyMeetingList() {
           </ViewMeetingListTr>
         </thead>
         <ColorChangeBody>
-          {listArr.map((item) => (
+          {console.log(checkItems)}
+          {listArr?.map((item, key) => (
             <tr>
               <td>
-                {isCheckAll ? (
-                  <input
-                    type="checkbox"
-                    onClick={(e) => {
-                      checkingCheckedBox(item.name, e);
-                    }}
-                    checked
-                  />
-                ) : (
-                  <input
-                    type="checkbox"
-                    onClick={(e) => {
-                      checkingCheckedBox(item.name, e);
-                    }}
-                  />
-                )}
+                <input
+                  type="checkbox"
+                  onChange={(e) => handleSingleCheck(e.target.checked, item.id)}
+                  checked={!!checkItems.includes(item.id)}
+                />
               </td>
               <td>
                 <MeetingRoomColorDiv>
