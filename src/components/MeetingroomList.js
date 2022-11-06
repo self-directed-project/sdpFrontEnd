@@ -17,9 +17,12 @@ function MeetingroomList() {
   const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/meeting-rooms', {
-        params
-      });
+      const res = await axios.get(
+        'https://sdp-ourmeeting.herokuapp.com/meeting-rooms',
+        {
+          params
+        }
+      );
       setFav(res.data.fav);
       setNonFav(res.data.nonFav);
     } catch (error) {
@@ -30,7 +33,7 @@ function MeetingroomList() {
   const postMeetingroom = async (memberId, meetingRoomId) => {
     try {
       axios
-        .post('http://localhost:8080/meeting-rooms', {
+        .post('https://sdp-ourmeeting.herokuapp.com/meeting-rooms', {
           memberId: `${memberId}`,
           meetingRoomId: `${meetingRoomId}`
         })
