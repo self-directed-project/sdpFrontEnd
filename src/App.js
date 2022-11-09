@@ -1,12 +1,19 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import styled from 'styled-components';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
-import MyMeetingList from './pages/temporaryPage/MainPage';
+import MyMeetingList from './pages/ViewMeetPage';
 import MeetingroomList from './components/MeetingroomList';
+import AutoComplete from './components/AutoComplete';
+
+const AppDiv = styled.div`
+  height: 100%;
+  width: 100%;
+`;
 
 function App() {
   return (
-    <div className="App">
+    <AppDiv>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -15,7 +22,7 @@ function App() {
           <Route path="/meeting-rooms" element={<MeetingroomList />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </AppDiv>
   );
 }
 
