@@ -6,49 +6,52 @@ import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
 import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 import OurMeetingIcon from './OurMeetingIcon';
+
+const cookie = new Cookies();
 
 function MeetingroomList() {
   const [fav, setFav] = useState([]);
   const [nonFav, setNonFav] = useState([]);
-  const params = {
-    memberId: 1,
-    meetingRoomId: 1
-  };
   const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
-      const res = await axios.get(
-        'https://sdp-ourmeeting.herokuapp.com/meeting-rooms',
-        {
-          params
-        }
-      );
+      const res = await axios.get('http://localhost:8080/meeting-rooms', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true
+      });
       setFav(res.data.fav);
       setNonFav(res.data.nonFav);
     } catch (error) {
       console.log(error);
     }
   };
-
-  const postMeetingroom = async (memberId, meetingRoomId) => {
-    axios
-      .post('http://sdp-ourmeeting.herokuapp.com/meeting-rooms', {
-        memberId: `${memberId}`,
-        meetingRoomId: `${meetingRoomId}`
-      })
-      .then((res) => {
-        setFav(res.data.fav);
-        setNonFav(res.data.nonFav);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const postMeetingroom = async (meetingRoomId) => {
+    try {
+      axios
+        .post('http://localhost:8080/meeting-rooms', {
+          headers: {
+            Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+          },
+          withCredentials: true,
+          meetingRoomId: `${meetingRoomId}`
+        })
+        .then((res) => {
+          setFav(res.data.fav);
+          setNonFav(res.data.nonFav);
+          console.log(res);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleBtn = (event) => {
-    const { id } = event.currentTarget;
-    postMeetingroom(params.memberId, id);
+    const meetingRoomId = event.target.id;
+    postMeetingroom(meetingRoomId);
   };
 
   useEffect(() => {
