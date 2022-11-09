@@ -50,8 +50,8 @@ function MeetingroomList() {
   };
 
   const handleBtn = (event) => {
-    const meetingRoomId = event.target.id;
-    postMeetingroom(meetingRoomId);
+    const { id } = event.currentTarget;
+    postMeetingroom(id);
   };
 
   useEffect(() => {

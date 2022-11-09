@@ -64,12 +64,14 @@ function MyMeetingList() {
     axios
       .get('http://localhost:8080/meeting/all', {
         withCredentials: true,
-        pageNumber: data.selected + 1,
+        page: data.selected,
         pageSize: Size
       })
       .then((res) => {
         console.log(res);
+        console.log(listArr);
         setListArr(res.data.meetings.content);
+        console.log(listArr);
       });
   };
 
@@ -81,7 +83,7 @@ function MyMeetingList() {
             Authorization: `Bearer ${cookie.get('JSESSIONID')}`
           },
           withCredentials: true,
-          pageNumber: 1,
+          pageNumber: 0,
           pageSize: 4
         })
         .then((res) => {
@@ -111,11 +113,11 @@ function MyMeetingList() {
         <ColorChangeBody>
           {console.log(listArr)}
           {listArr?.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
+            <tr key={item.meetingRoomId}>
+              <td>{item.meetingRoomId}</td>
               <td>
                 <MeetingRoomColorDiv>
-                  <MeetingRoomColor type={item.meetingType} />
+                  <MeetingRoomColor type={item.type} />
                   <span>{item.name}</span>
                 </MeetingRoomColorDiv>
               </td>
@@ -135,8 +137,8 @@ function MyMeetingList() {
                     : `${EndBigThanStartMinut(item)}분`
                   : `${EndBigThanStartHour(item)}시간`}
               </MeetingTime>
-              <td>{item.meetingRoom.name}</td>
-              <td>{item.meetingRoom.name}</td>
+              <td>{item.name}</td>
+              <td>{item.name}</td>
             </tr>
           ))}
         </ColorChangeBody>

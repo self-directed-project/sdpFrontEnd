@@ -62,7 +62,7 @@ function ReservationMeeting() {
     const end = `${inputList.inputDate}T${inputList.inputEndHour}:${inputList.inputEndMin}`;
     try {
       axios.post('http://localhost:8080/meeting/reserve', {
-        name: `${inputList.inputMeetingName}`,
+        name: '개발 1팀회의',
         membersId: [1, 2],
         meetingRoomId: Number(`${inputList.inputMeetingRoomId}`),
         type: `${inputList.inputType}`,
