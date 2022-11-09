@@ -5,20 +5,22 @@ import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 import OurMeetingIcon from './OurMeetingIcon';
+
+const cookie = new Cookies();
 
 function MeetingroomList() {
   const [fav, setFav] = useState([]);
   const [nonFav, setNonFav] = useState([]);
-  const params = {
-    memberId: 1,
-    meetingRoomId: 1
-  };
   const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
       const res = await axios.get('http://localhost:8080/meeting-rooms', {
-        params
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true
       });
       setFav(res.data.fav);
       setNonFav(res.data.nonFav);
@@ -27,11 +29,14 @@ function MeetingroomList() {
     }
   };
 
-  const postMeetingroom = async (memberId, meetingRoomId) => {
+  const postMeetingroom = async (meetingRoomId) => {
     try {
       axios
         .post('http://localhost:8080/meeting-rooms', {
-          memberId: `${memberId}`,
+          headers: {
+            Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+          },
+          withCredentials: true,
           meetingRoomId: `${meetingRoomId}`
         })
         .then((res) => {
@@ -46,7 +51,7 @@ function MeetingroomList() {
 
   const handleBtn = (event) => {
     const meetingRoomId = event.target.id;
-    postMeetingroom(params.memberId, meetingRoomId);
+    postMeetingroom(meetingRoomId);
   };
 
   useEffect(() => {
