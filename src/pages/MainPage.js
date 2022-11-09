@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { useEffect } from 'react';
+import styled from 'styled-components';
 import { Cookies } from 'react-cookie';
+import { useEffect } from 'react';
 import MeetingroomList from '../components/MeetingroomList';
+import ReservationMeeting from '../components/ReservationMeeting';
 
 const cookie = new Cookies();
 
@@ -24,9 +26,19 @@ function MainPage() {
     }
   }, []);
   return (
-    <div>
-      <MeetingroomList />
-    </div>
+    <MainDiv>
+      <div>
+        <MeetingroomList />
+      </div>
+      <div>
+        <ReservationMeeting />
+      </div>
+    </MainDiv>
   );
 }
+const MainDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
 export default MainPage;

@@ -3,22 +3,25 @@ import styled from 'styled-components';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
+import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 import OurMeetingIcon from './OurMeetingIcon';
+
+const cookie = new Cookies();
 
 function MeetingroomList() {
   const [fav, setFav] = useState([]);
   const [nonFav, setNonFav] = useState([]);
-  const params = {
-    memberId: 1,
-    meetingRoomId: 1
-  };
   const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
       const res = await axios.get('http://localhost:8080/meeting-rooms', {
-        params
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true
       });
       setFav(res.data.fav);
       setNonFav(res.data.nonFav);
@@ -26,12 +29,14 @@ function MeetingroomList() {
       console.log(error);
     }
   };
-
-  const postMeetingroom = async (memberId, meetingRoomId) => {
+  const postMeetingroom = async (meetingRoomId) => {
     try {
       axios
         .post('http://localhost:8080/meeting-rooms', {
-          memberId: `${memberId}`,
+          headers: {
+            Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+          },
+          withCredentials: true,
           meetingRoomId: `${meetingRoomId}`
         })
         .then((res) => {
@@ -46,7 +51,7 @@ function MeetingroomList() {
 
   const handleBtn = (event) => {
     const meetingRoomId = event.target.id;
-    postMeetingroom(params.memberId, meetingRoomId);
+    postMeetingroom(meetingRoomId);
   };
 
   useEffect(() => {
@@ -65,9 +70,9 @@ function MeetingroomList() {
       {fav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <FavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
-              StarIcon
-            </FavBtn>
+            <IconButton id={meetingroom.id} onClick={handleBtn} disableRipple>
+              <FavBtn />
+            </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
           <ElementChild2>
@@ -79,9 +84,14 @@ function MeetingroomList() {
       {nonFav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <NonFavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
-              StarIcon
-            </NonFavBtn>
+            <IconButton
+              id={meetingroom.id}
+              onClick={handleBtn}
+              disableElevation
+              disableRipple
+            >
+              <NonFavBtn />
+            </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
           <ElementChild2>
@@ -92,6 +102,7 @@ function MeetingroomList() {
     </List>
   );
 }
+
 const List = styled.div`
   width: 250px;
   font-family: 'Spoqa Han Sans Neo';

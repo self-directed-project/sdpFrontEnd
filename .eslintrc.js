@@ -51,6 +51,26 @@ module.exports = {
     ],
     'no-unused-vars': 'off',
     'import/prefer-default-export': 'off',
-    'no-param-reassign': 'off'
+    'no-param-reassign': 'off',
+    'jsx-a11y/control-has-associated-label': [
+      'off',
+      {
+        labelComponents: [],
+        labelAttributes: [],
+        controlComponents: [],
+        assert: 'both',
+        depth: 25
+      }
+    ],
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        components: [],
+        required: {
+          some: ['nesting', 'id']
+        },
+        allowChildren: false
+      }
+    ]
   }
 };
