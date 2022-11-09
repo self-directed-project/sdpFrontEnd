@@ -7,16 +7,21 @@ const cookie = new Cookies();
 
 export const sendingSession = () => {
   axios
-    .get('https://sdp-ourmeeting.herokuapp.com/main', {
+    .get('http://localhost:8080/main', {
       headers: {
         Authorization: `Bearer ${cookie.get('JSESSIONID')}`
-      }
+      },
+      withCredentials: true
     })
     .then((res) => console.log(res));
 };
 function MainPage() {
   useEffect(() => {
-    sendingSession();
+    try {
+      sendingSession();
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
   return (
     <div>
