@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 import MoreHorizSharpIcon from '@mui/icons-material/MoreHorizSharp';
+import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
@@ -28,7 +29,6 @@ function MeetingroomList() {
       console.log(error);
     }
   };
-
   const postMeetingroom = async (meetingRoomId) => {
     try {
       axios
@@ -70,9 +70,9 @@ function MeetingroomList() {
       {fav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <FavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
-              StarIcon
-            </FavBtn>
+            <IconButton id={meetingroom.id} onClick={handleBtn} disableRipple>
+              <FavBtn />
+            </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
           <ElementChild2>
@@ -84,9 +84,14 @@ function MeetingroomList() {
       {nonFav.map((meetingroom) => (
         <Element key={meetingroom.id}>
           <ElementChild1>
-            <NonFavBtn type="button" id={meetingroom.id} onClick={handleBtn}>
-              StarIcon
-            </NonFavBtn>
+            <IconButton
+              id={meetingroom.id}
+              onClick={handleBtn}
+              disableElevation
+              disableRipple
+            >
+              <NonFavBtn />
+            </IconButton>
             <span>{meetingroom.name}</span>
           </ElementChild1>
           <ElementChild2>
@@ -97,6 +102,7 @@ function MeetingroomList() {
     </List>
   );
 }
+
 const List = styled.div`
   width: 250px;
   font-family: 'Spoqa Han Sans Neo';
