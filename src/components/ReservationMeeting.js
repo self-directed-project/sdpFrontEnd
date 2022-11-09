@@ -33,20 +33,70 @@ function ReservationMeeting() {
     '23'
   ];
   const minuteArr = ['00', '30'];
+  const inputList = {
+    inputMeetingName: '',
+    inputDate: '',
+    inputMeetingRoomId: 0,
+    inputType: '',
+    inputStartHour: '',
+    inputStartMin: '',
+    inputEndHour: '',
+    inputEndMin: '',
+    inputDescription: ''
+  };
+
   const [list, setList] = useState([]);
-  const [type, setType] = useState([]);
+  const [gType, setgType] = useState([]);
+  const [memberList, setMemberList] = useState([]);
   const getList = async () => {
     try {
       const res = await axios.get('http://localhost:8080/meeting/reserve');
       setList(res.data.meetingRoomList);
-      setType(res.data.meetingType);
-      console.log(res.data);
-      console.log(res.data.meetingType[0]);
+      setgType(res.data.meetingType);
     } catch (error) {
       console.log(error);
     }
   };
-
+  const postList = async () => {
+    const start = `${inputList.inputDate}T${inputList.inputStartHour}:${inputList.inputStartMin}`;
+    const end = `${inputList.inputDate}T${inputList.inputEndHour}:${inputList.inputEndMin}`;
+    try {
+      axios.post('http://localhost:8080/meeting/reserve', {
+        name: `${inputList.inputMeetingName}`,
+        membersId: [1, 2],
+        meetingRoomId: Number(`${inputList.inputMeetingRoomId}`),
+        type: `${inputList.inputType}`,
+        start: `${start}`,
+        end: `${end}`,
+        description: `${inputList.inputDescription}`
+      });
+      console.log({
+        name: `${inputList.inputMeetingName}`,
+        membersId: [1, 2],
+        meetingRoomId: Number(`${inputList.inputMeetingRoomId}`),
+        type: `${inputList.inputType}`,
+        start: `${start}`,
+        end: `${end}`,
+        description: `${inputList.inputDescription}`
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getMember = async (gName) => {
+    const params = { name: `${gName}` };
+    try {
+      const res = await axios.get(
+        'http://localhost:8080/meeting/reserve/search',
+        {
+          params
+        }
+      );
+      setMemberList(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getList();
   }, []);
@@ -59,68 +109,129 @@ function ReservationMeeting() {
       <Form>
         <Div>
           <TextSpan>회의명</TextSpan>
-          <Input type="text" />
+          <Input
+            type="text"
+            onChange={(event) => {
+              inputList.inputMeetingName = event.target.value;
+            }}
+          />
         </Div>
         <TextDiv>참석자</TextDiv>
-        <AttendeesInput type="text" />
+        <AttendeesInput
+          type="text"
+          list="memberLi"
+          onChange={(event) => {
+            getMember(event.target.value);
+          }}
+        />
+        <datalist id="memberLi">
+          {memberList.map((item) => (
+            <option id={item.id} value={item.name} />
+          ))}
+        </datalist>
         <AttendeesList />
         <Div>
           <TextLabel htmlFor="meetingRoomList">회의실</TextLabel>
-          <Input list="meetingRoom" name="meetingRoomList" />
-          <datalist id="meetingRoom">
+          <Select
+            id="meetingRoom"
+            onChange={(event) => {
+              inputList.inputMeetingRoomId = event.target.value;
+            }}
+          >
+            <option value="none" hidden />
             {list.map((li) => (
-              <option value={li.name} key={li.id} id={li.id} />
+              <option
+                value={li.id}
+                defaultValue={list.defaultValue === li.value}
+              >
+                {li.name}
+              </option>
             ))}
-          </datalist>
+          </Select>
         </Div>
         <Div>
           <TextLabel htmlFor="meetingRoomType">회의 유형</TextLabel>
-          <Input list="meetingType" name="meetingRoomType" />
-          <datalist id="meetingType">
-            {type.map((typ) => (
-              <option value={typ} />
+          <Select
+            id="meetingType"
+            onChange={(event) => {
+              inputList.inputType = event.target.value;
+            }}
+          >
+            <option value="none" hidden />
+            {gType.map((typ) => (
+              <option value={typ}>{typ}</option>
             ))}
-          </datalist>
+          </Select>
         </Div>
         <Div>
           <TextSpan>회의 날짜</TextSpan>
-          <Input type="date" />
+          <TimeInput
+            type="date"
+            onChange={(event) => {
+              inputList.inputDate = event.target.value;
+            }}
+          />
         </Div>
         <Div>
           <TextLabel htmlFor="meetingStart">회의 시작</TextLabel>
-          <TimeInput list="hour" name="meetingStart" />
-          <datalist id="hour">
+          <TimeSelect
+            id="hour"
+            onChange={(event) => {
+              inputList.inputStartHour = event.target.value;
+            }}
+          >
+            <option value="none" hidden />
             {hourArr.map((hour) => (
-              <option value={hour} />
+              <option value={hour}>{hour}</option>
             ))}
-          </datalist>
+          </TimeSelect>
           <span> : </span>
-          <TimeInput list="minute" name="meetingStart" />
-          <datalist id="minute">
+          <TimeSelect
+            id="minute"
+            onChange={(event) => {
+              inputList.inputStartMin = event.target.value;
+            }}
+          >
+            <option value="none" hidden />
             {minuteArr.map((min) => (
-              <option value={min} />
+              <option value={min}>{min}</option>
             ))}
-          </datalist>
+          </TimeSelect>
         </Div>
         <Div>
           <TextLabel htmlFor="meetingFinish">회의 종료</TextLabel>
-          <TimeInput list="hour" name="meetingFinish" />
-          <datalist id="hour">
+          <TimeSelect
+            id="hour"
+            onChange={(event) => {
+              inputList.inputEndHour = event.target.value;
+            }}
+          >
+            <option value="none" hidden />
             {hourArr.map((hour) => (
-              <option value={hour} />
+              <option value={hour}>{hour}</option>
             ))}
-          </datalist>
+          </TimeSelect>
           <span> : </span>
-          <TimeInput list="minute" name="meetingFinish" />
-          <datalist id="minute">
+          <TimeSelect
+            id="minute"
+            onChange={(event) => {
+              inputList.inputEndMin = event.target.value;
+            }}
+          >
+            <option value="none" hidden />
             {minuteArr.map((min) => (
-              <option value={min} />
+              <option value={min}>{min}</option>
             ))}
-          </datalist>
+          </TimeSelect>
         </Div>
         <TextDiv>회의 내용</TextDiv>
-        <TextArea placeholder="회의 내용을 적어주세요" />
-        <Btn type="button" value="예약하기" />
+        <TextArea
+          placeholder="회의 내용을 적어주세요"
+          onChange={(event) => {
+            inputList.inputDescription = event.target.value;
+          }}
+        />
+        <Btn type="submit" value="예약하기" onClick={postList} />
       </Form>
     </EntireDiv>
   );
@@ -161,6 +272,18 @@ const Input = styled.input`
     border-bottom: 2px solid #0594ff;
   }
 `;
+const Select = styled.select`
+  border: 0;
+  border-bottom: 1px solid #d7e3f1;
+  width: 291px;
+  height: 60px;
+  outline: 0;
+  font-size: 18px;
+  font-weight: 500;
+  &:focus {
+    border-bottom: 2px solid #0594ff;
+  }
+`;
 
 const AttendeesInput = styled.input`
   border: 0;
@@ -174,10 +297,11 @@ const AttendeesInput = styled.input`
     border-bottom: 2px solid #0594ff;
   }
 `;
+
 const AttendeesList = styled.div`
   height: 120px;
 `;
-const TimeInput = styled.input`
+const TimeSelect = styled.select`
   border: 0;
   border-bottom: 1px solid #d7e3f1;
   height: 60px;
@@ -185,6 +309,18 @@ const TimeInput = styled.input`
   font-size: 18px;
   font-weight: 500;
   outline: 0;
+  &:focus {
+    border-bottom: 2px solid #0594ff;
+  }
+`;
+const TimeInput = styled.input`
+  border: 0;
+  border-bottom: 1px solid #d7e3f1;
+  width: 291px;
+  height: 60px;
+  outline: 0;
+  font-size: 18px;
+  font-weight: 500;
   &:focus {
     border-bottom: 2px solid #0594ff;
   }
