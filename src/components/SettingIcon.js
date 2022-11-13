@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
 
 const Div = styled.div`
@@ -36,17 +37,38 @@ const SmallLine = styled.div`
   text-align: left;
 `;
 
-function SettingIcon() {
+// eslint-disable-next-line react/prop-types
+function SettingIcon({ setModalOpen }) {
+  const outside = useRef();
+  const settingCLick = (e) => {
+    setModalOpen(true);
+    if (e.target === outside.current) {
+      setModalOpen(false);
+    }
+    /*
+    axios.get('/api/users/logout')
+        .then(response => {
+            if(response.data.success){
+                console.log(props.history);
+                props.history.push('/login')
+            } else {
+                alert('Error')
+            }
+        })
+        */
+  };
   return (
-    <Div>
-      <BigDiv>
-        <BigLine />
-        <BigLine />
-      </BigDiv>
-      <SmallDiv>
-        <SmallLine />
-      </SmallDiv>
-    </Div>
+    <div>
+      <Div onClick={settingCLick}>
+        <BigDiv>
+          <BigLine />
+          <BigLine />
+        </BigDiv>
+        <SmallDiv>
+          <SmallLine />
+        </SmallDiv>
+      </Div>
+    </div>
   );
 }
 export default SettingIcon;

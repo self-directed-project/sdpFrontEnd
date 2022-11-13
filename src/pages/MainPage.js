@@ -2,20 +2,27 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { Cookies } from 'react-cookie';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MeetingroomList from '../components/MeetingroomList';
 import ReservationMeeting from '../components/ReservationMeeting';
 
 const cookie = new Cookies();
 
 export const sendingSession = () => {
-  axios
-    .get('http://localhost:8080/main', {
-      headers: {
-        Authorization: `Bearer ${cookie.get('JSESSIONID')}`
-      },
-      withCredentials: true
-    })
-    .then((res) => console.log(res));
+  const navigate = useNavigate();
+  if (sessionStorage.getItem('user_id') === null) {
+    alert('세션이 만료되었습니다..');
+    navigate(`/`);
+  } else {
+    axios
+      .get('http://localhost:8080/main', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true
+      })
+      .then((res) => console.log(res));
+  }
 };
 function MainPage() {
   useEffect(() => {

@@ -1,7 +1,8 @@
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
-import NotesIcon from '@mui/icons-material/Notes';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingIcon from './SettingIcon';
+import LogoutModal from './LogoutModal';
 
 const HeaderMainDiv = styled.div`
   position: relative;
@@ -76,8 +77,18 @@ const AllamIconDiv = styled.div`
 `;
 
 function MyMeetingList() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const outside = useRef();
   return (
-    <HeaderMainDiv>
+    <HeaderMainDiv
+      ref={outside}
+      onClick={(e) => {
+        console.log(e.target);
+        if (e.target === outside.current) {
+          setModalOpen(false);
+        }
+      }}
+    >
       <HeaderDiv>
         <p>내 회의 보기</p>
         <ColorSpan>
@@ -98,7 +109,8 @@ function MyMeetingList() {
       <HeaderDivSeeting>
         <AllamIcon />
         <AllamIconDiv />
-        <SettingIcon />
+        <SettingIcon setModalOpen={setModalOpen} />
+        {modalOpen && <LogoutModal setModalOpen={setModalOpen} />}
       </HeaderDivSeeting>
     </HeaderMainDiv>
   );

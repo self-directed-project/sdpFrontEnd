@@ -105,11 +105,8 @@ function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = sessionStorage.getItem('user_id');
     if (sessionStorage.getItem('user_id') === null) {
       navigate('/');
-    } else {
-      navigate(`/main/${user}`);
     }
   }, []);
   const StartLogin = () => {
