@@ -39,23 +39,8 @@ const SmallLine = styled.div`
 
 // eslint-disable-next-line react/prop-types
 function SettingIcon({ setModalOpen }) {
-  const outside = useRef();
   const settingCLick = (e) => {
     setModalOpen(true);
-    if (e.target === outside.current) {
-      setModalOpen(false);
-    }
-    /*
-    axios.get('/api/users/logout')
-        .then(response => {
-            if(response.data.success){
-                console.log(props.history);
-                props.history.push('/login')
-            } else {
-                alert('Error')
-            }
-        })
-        */
   };
   return (
     <div>

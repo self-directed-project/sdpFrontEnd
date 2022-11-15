@@ -105,7 +105,9 @@ function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (sessionStorage.getItem('user_id') === null) {
+    if (sessionStorage.getItem('user_id')) {
+      navigate('/main/login');
+    } else {
       navigate('/');
     }
   }, []);

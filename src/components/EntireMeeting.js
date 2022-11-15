@@ -10,6 +10,7 @@ const cookie = new Cookies();
 
 function MyMeetingList() {
   const [listArr, setListArr] = useState([]);
+  let pageCount = 0;
 
   function TotalMinut(item) {
     return (
@@ -59,17 +60,18 @@ function MyMeetingList() {
   }
 
   const handlePageClick = (data) => {
-    const Size = 4;
-    console.log(data.selected + 1);
+    const pageInfo = {
+      curPage: data.selected
+    };
     axios
       .get('http://localhost:8080/meeting/all', {
         withCredentials: true,
-        page: data.selected,
-        pageSize: Size
+        pageInfo
       })
       .then((res) => {
         console.log(res);
         console.log(listArr);
+        pageCount = Math.ceil(12 / 4);
         setListArr(res.data.meetings.content);
         console.log(listArr);
       });
@@ -88,6 +90,7 @@ function MyMeetingList() {
         })
         .then((res) => {
           console.log(res.data);
+          pageCount = Math.ceil(12 / 4);
           setListArr(res.data.meetings.content);
         });
     } catch (error) {
@@ -148,7 +151,7 @@ function MyMeetingList() {
           previousLabel="<"
           nextLabel=">"
           breakLabel="..."
-          pageCount={10}
+          pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}

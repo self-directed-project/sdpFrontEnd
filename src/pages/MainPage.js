@@ -10,10 +10,7 @@ const cookie = new Cookies();
 
 export const sendingSession = () => {
   const navigate = useNavigate();
-  if (sessionStorage.getItem('user_id') === null) {
-    alert('세션이 만료되었습니다..');
-    navigate(`/`);
-  } else {
+  if (sessionStorage.getItem('user_id')) {
     axios
       .get('http://localhost:8080/main', {
         headers: {
@@ -22,6 +19,9 @@ export const sendingSession = () => {
         withCredentials: true
       })
       .then((res) => console.log(res));
+  } else {
+    alert('세션이 만료되었습니다..');
+    navigate(`/`);
   }
 };
 function MainPage() {

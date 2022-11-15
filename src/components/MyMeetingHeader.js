@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingIcon from './SettingIcon';
@@ -7,6 +7,7 @@ import LogoutModal from './LogoutModal';
 const HeaderMainDiv = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,6 +18,8 @@ const HeaderDiv = styled.div`
   justify-content: left;
   align-items: center;
   width: 100%;
+  height: 100%;
+  padding: 30px;
 `;
 const ColorSpan = styled.div`
   display: flex;
@@ -48,15 +51,15 @@ const ColorDiv = styled.div`
 
 const HeaderDivSeeting = styled.div`
   position: absolute;
-  top: -50px;
-  right: 0px;
+  top: 40px;
+  right: 50px;
   display: flex;
   justify-items: center;
   align-items: center;
-  padding: 50px;
 `;
 
 const AllamIcon = styled(NotificationsIcon)`
+  position: relative;
   background-color: white;
   color: #4a5568;
   width: 80px;
@@ -71,25 +74,27 @@ const AllamIconDiv = styled.div`
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  top: 58px;
-  left: 51px;
+  top: 8px;
   background-color: #ff4545;
 `;
 
 function MyMeetingList() {
   const [modalOpen, setModalOpen] = useState(false);
   const outside = useRef();
+  const handleClickOutside = ({ target }) => {
+    if (modalOpen && !outside.current.contains(target) === false) {
+      setModalOpen(false);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('click', handleClickOutside);
+    };
+  });
   return (
-    <HeaderMainDiv
-      ref={outside}
-      onClick={(e) => {
-        console.log(e.target);
-        if (e.target === outside.current) {
-          setModalOpen(false);
-        }
-      }}
-    >
-      <HeaderDiv>
+    <HeaderMainDiv>
+      <HeaderDiv ref={outside} onClick={handleClickOutside}>
         <p>내 회의 보기</p>
         <ColorSpan>
           <ColorSpanType>

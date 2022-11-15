@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { Fragment, useEffect } from 'react';
 import { Cookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MyMeetingList from '../components/MyMeetingList';
 import MeetingroomList from '../components/MeetingroomList';
@@ -23,24 +24,32 @@ const MeetingDiv = styled.div`
 `;
 const MeetingHeaderDiv = styled.div`
   width: 100%;
-  padding-left: 35px;
-  padding-top: 43px;
+  height: 20%;
   font-family: 'Spoqa Han Sans Neo';
   font-weight: 700;
   font-size: 26px;
   line-height: 32.55px;
 `;
+const MeetingListDiv = styled.div`
+  width: 100%;
+  height: 80%;
+  font-family: 'Spoqa Han Sans Neo';
+`;
 
 const cookie = new Cookies();
 export const sendingSession = () => {
-  axios
-    .get('http://localhost:8080/main', {
-      headers: {
-        Authorization: `Bearer ${cookie.get('JSESSIONID')}`
-      },
-      withCredentials: true
-    })
-    .then((res) => console.log(res));
+  if (sessionStorage.getItem('user_id') === null) {
+    navigator('/');
+  } else {
+    axios
+      .get('http://localhost:8080/main', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true
+      })
+      .then((res) => console.log(res));
+  }
 };
 function ViewMeetPage() {
   return (
@@ -53,10 +62,10 @@ function ViewMeetPage() {
           <MeetingHeaderDiv>
             <MyMeetingHeader />
           </MeetingHeaderDiv>
-          <div>
+          <MeetingListDiv>
             <MyMeetingList />
             <EntireMeeting />
-          </div>
+          </MeetingListDiv>
         </MeetingDiv>
       </Div>
     </Fragment>
