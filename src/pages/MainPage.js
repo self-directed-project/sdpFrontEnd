@@ -19,9 +19,6 @@ export const sendingSession = () => {
         withCredentials: true
       })
       .then((res) => console.log(res));
-  } else {
-    alert('세션이 만료되었습니다..');
-    navigate(`/`);
   }
 };
 function MainPage() {

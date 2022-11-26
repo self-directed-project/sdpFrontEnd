@@ -24,6 +24,11 @@ const Div = styled.div`
   background-color: white;
   border-radius: 10px;
   text-align: center;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 const DivSpan = styled.span`
   padding: 5px;

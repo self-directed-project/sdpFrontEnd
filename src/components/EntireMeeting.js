@@ -137,8 +137,8 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
         <thead>
           <ViewMeetingListTr>
             <td>No</td>
-            <td>회의명</td>
-            <ViewMeetingListTd>회의 일시</ViewMeetingListTd>
+            <ViewMeetingListTd>회의명</ViewMeetingListTd>
+            <td>회의 일시</td>
             <td>회의 시간</td>
             <td>회의실</td>
             <td>개설자</td>
@@ -171,7 +171,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
                     : `${EndBigThanStartMinut(item)}분`
                   : `${EndBigThanStartHour(item)}시간`}
               </MeetingTime>
-              <td>{item.name}</td>
+              <td>{`회의실${item.meetingRoomId}`}</td>
               <td>{item.name}</td>
             </tr>
           ))}
@@ -263,6 +263,7 @@ const ViewMeetingListTr = styled.tr`
 
   & td {
     color: rgba(0, 0, 0, 0.5);
+    width: 20%;
   }
   & td:nth-child(1) {
     width: 30px;
@@ -283,9 +284,11 @@ const ColorChangeBody = styled.tbody`
 `;
 
 const MeetingRoomColorDiv = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  padding-left: 40px;
 `;
 
 const MeetingRoomColor = styled.div`

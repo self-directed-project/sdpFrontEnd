@@ -180,8 +180,8 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
                 onClick={onCloseAllInput}
               />
             </td>
-            <td>회의명</td>
-            <ViewMeetingListTd>회의 일시</ViewMeetingListTd>
+            <ViewMeetingListTd>회의명</ViewMeetingListTd>
+            <td>회의 일시</td>
             <td>회의 시간</td>
             <td>회의실</td>
             <td>개설자</td>
@@ -281,6 +281,7 @@ const ListTable = styled.table`
   width: 100%;
   text-align: center;
   font-size: 20px;
+  border-radius: 10px;
 
   & th {
     padding: 20px;
@@ -297,6 +298,7 @@ const ViewMeetingListTr = styled.tr`
 
   & td {
     color: rgba(0, 0, 0, 0.5);
+    width: 20%;
   }
   & td:nth-child(1) {
     width: 30px;
@@ -317,9 +319,11 @@ const ColorChangeBody = styled.tbody`
 `;
 
 const MeetingRoomColorDiv = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  padding-left: 40px;
 `;
 const MeetingRoomColor = styled.div`
   width: 10px;
