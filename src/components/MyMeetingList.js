@@ -1,18 +1,29 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-nested-ternary */
 import axios from 'axios';
+import { Cookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ViewMyDetails from './ViewMyDetails';
 
-function MyMeetingList() {
+const cookie = new Cookies();
+
+// eslint-disable-next-line react/prop-types
+function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
   const [listArr, setListArr] = useState([]);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checkedArr, setCheckedArr] = useState([]);
+  const [MymeetingID, setMyMeetingID] = useState('');
+  const [MymeetingName, setMyMeetingName] = useState('');
+  const [MymeetingStart, setMyMeetingStart] = useState('');
+  const [MymeetingEnd, setMyMeetingEnd] = useState('');
+  const [MyattendList, setMyAttendList] = useState([]);
 
   const changeAllCheck = (e) => {
     console.log(listArr);
     if (isCheckAll === false) {
-      const allArr = listArr.map((item) => item.name);
+      const allArr = listArr.map((item) => item.meetingId);
       setCheckedArr(allArr);
       setIsCheckAll(true);
       for (let i = 0; i < listArr.length; i++) {
@@ -28,12 +39,12 @@ function MyMeetingList() {
     }
   };
 
-  const checkingCheckedBox = (name, e) => {
+  const checkingCheckedBox = (meetingId, e) => {
     if (e.target.checked === false) {
-      const newArr = checkedArr.filter((item) => item !== name);
+      const newArr = checkedArr.filter((item) => item !== meetingId);
       setCheckedArr(newArr);
     } else {
-      setCheckedArr((prev) => [...prev, name]);
+      setCheckedArr((prev) => [...prev, meetingId]);
     }
     if (isCheckAll === true) {
       setIsCheckAll(false);
@@ -42,12 +53,22 @@ function MyMeetingList() {
   };
   const deleteList = () => {
     axios
-      .post('http://localhost:8080/meeting/mymeeting', {
+      .post('http://localhost:8080/meeting/delete', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
         withCredentials: true,
-        data: checkedArr
+        meetingsId: checkedArr
       })
       .then((res) => {
-        console.log(res.data);
+        console.log(res);
+        console.log(checkedArr.length);
+        let newArr = listArr;
+        for (let i = 0; i < checkedArr.length; i++) {
+          newArr = newArr.filter((item) => item.meetingId !== checkedArr[i]);
+        }
+        setListArr(newArr);
+        console.log(newArr);
       });
     setIsCheckAll(false);
     setCheckedArr([]);
@@ -99,6 +120,36 @@ function MyMeetingList() {
     );
   }
 
+  const meetingListClick = (item) => {
+    setMyDetailModalOpen(true);
+    setMyMeetingID(item.meetingRoomId);
+    setMyMeetingName(item.name);
+    setMyMeetingStart(item.start);
+    setMyMeetingEnd(item.end);
+
+    const params = {
+      start: item.start,
+      meetingRoomId: item.meetingRoomId
+    };
+    axios
+      .get('http://localhost:8080/meeting/detailPage', {
+        withCredentials: true,
+        params
+      })
+      .then((res) => {
+        console.log(res);
+        setMyAttendList(res.data.detail.nameList);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onCloseAllInput = () => {
+    setMyDetailModalOpen(false);
+  };
+  const onCloseInput = () => {
+    setMyDetailModalOpen(false);
+  };
+
   useEffect(() => {
     axios
       .get('http://localhost:8080/meeting/mymeeting', { withCredentials: true })
@@ -126,6 +177,7 @@ function MyMeetingList() {
                 type="checkbox"
                 onChange={(e) => changeAllCheck(e.target.checked)}
                 checked={checkedArr.length === listArr.length}
+                onClick={onCloseAllInput}
               />
             </td>
             <td>회의명</td>
@@ -136,25 +188,27 @@ function MyMeetingList() {
           </ViewMeetingListTr>
         </thead>
         <ColorChangeBody>
+          {console.log(checkedArr)}
           {listArr.map((item) => (
             <tr>
               <td>
                 <input
                   type="checkbox"
                   onClick={(e) => {
-                    checkingCheckedBox(item.name, e);
+                    checkingCheckedBox(item.meetingId, e);
+                    onCloseInput();
                   }}
-                  checked={!!checkedArr.includes(item.name)}
+                  checked={!!checkedArr.includes(item.meetingId)}
                 />
               </td>
-              <td>
+              <td onClick={() => meetingListClick(item)}>
                 <MeetingRoomColorDiv>
                   <MeetingRoomColor type={item.type} />
                   <span>{item.name}</span>
                 </MeetingRoomColorDiv>
               </td>
-              <td>{item.start}</td>
-              <MeetingTime>
+              <td onClick={() => meetingListClick(item)}>{item.start}</td>
+              <MeetingTime onClick={() => meetingListClick(item)}>
                 {TotalMinut(item) < 0
                   ? EndSmallThanStartMinut(item) !== 0
                     ? `${EndSmallThanStartHour(
@@ -169,12 +223,24 @@ function MyMeetingList() {
                     : `${EndBigThanStartMinut(item)}분`
                   : `${EndBigThanStartHour(item)}시간`}
               </MeetingTime>
-              <td>{`회의실${item.meetingRoomId}`}</td>
-              <td>{item.createdBy}</td>
+              <td
+                onClick={() => meetingListClick(item)}
+              >{`회의실${item.meetingRoomId}`}</td>
+              <td onClick={() => meetingListClick(item)}>{item.createdBy}</td>
             </tr>
           ))}
         </ColorChangeBody>
       </ListTable>
+      {MydetailModalOpen && (
+        <ViewMyDetails
+          setMyDetailModalOpen={setMyDetailModalOpen}
+          MymeetingId={MymeetingID}
+          MymeetingName={MymeetingName}
+          MymeetingStart={MymeetingStart}
+          MymeetingEnd={MymeetingEnd}
+          MyattendList={MyattendList}
+        />
+      )}
     </ViewMeeting>
   );
 }

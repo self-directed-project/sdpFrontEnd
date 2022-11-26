@@ -5,11 +5,18 @@ import { Cookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
+import ViewDetails from './ViewDetails';
 
 const cookie = new Cookies();
 
-function MyMeetingList() {
+// eslint-disable-next-line react/prop-types
+function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   const [listArr, setListArr] = useState([]);
+  const [meetingId, setMeetingId] = useState('');
+  const [meetingName, setMeetingName] = useState('');
+  const [meetingStart, setMeetingStart] = useState('');
+  const [meetingEnd, setMeetingEnd] = useState('');
+  const [attendList, setAttendList] = useState([]);
   let pageCount = 0;
 
   function TotalMinut(item) {
@@ -76,6 +83,30 @@ function MyMeetingList() {
         console.log(listArr);
       });
   };
+  const meetingListClick = (item) => {
+    setDetailModalOpen(true);
+    setMeetingId(item.meetingRoomId);
+    setMeetingName(item.name);
+    setMeetingStart(item.start);
+    setMeetingEnd(item.end);
+    const params = {
+      start: item.start,
+      meetingRoomId: item.meetingRoomId
+    };
+    axios
+      .get('http://localhost:8080/meeting/detailPage', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true,
+        params
+      })
+      .then((res) => {
+        console.log(res);
+        setAttendList(res.data.detail.nameList);
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     try {
@@ -116,7 +147,7 @@ function MyMeetingList() {
         <ColorChangeBody>
           {console.log(listArr)}
           {listArr?.map((item) => (
-            <tr key={item.meetingRoomId}>
+            <tr key={item.meetingRoomId} onClick={() => meetingListClick(item)}>
               <td>{item.meetingRoomId}</td>
               <td>
                 <MeetingRoomColorDiv>
@@ -165,6 +196,16 @@ function MyMeetingList() {
           activeClassName="active"
         />
       </PagiNateDiv>
+      {detailModalOpen && (
+        <ViewDetails
+          setDetailModalOpen={setDetailModalOpen}
+          meetingId={meetingId}
+          meetingName={meetingName}
+          meetingStart={meetingStart}
+          meetingEnd={meetingEnd}
+          attendList={attendList}
+        />
+      )}
     </ViewMeeting>
   );
 }
@@ -248,6 +289,7 @@ const MeetingRoomColorDiv = styled.div`
 `;
 
 const MeetingRoomColor = styled.div`
+  left: -90px;
   width: 10px;
   height: 10px;
   background-color: ${(props) => {
@@ -346,4 +388,4 @@ const PagiNateDiv = styled.div`
     color: #337ab7;
   }
 `;
-export default MyMeetingList;
+export default EntireMeeting;

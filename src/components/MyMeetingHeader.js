@@ -78,8 +78,8 @@ const AllamIconDiv = styled.div`
   background-color: #ff4545;
 `;
 
-function MyMeetingList() {
-  const [modalOpen, setModalOpen] = useState(false);
+// eslint-disable-next-line react/prop-types
+function MyMeetingList({ setModalOpen, modalOpen }) {
   const outside = useRef();
   const handleClickOutside = ({ target }) => {
     if (modalOpen && !outside.current.contains(target) === false) {

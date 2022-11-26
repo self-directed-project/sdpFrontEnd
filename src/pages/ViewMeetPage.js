@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { Cookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -52,6 +52,9 @@ export const sendingSession = () => {
   }
 };
 function ViewMeetPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [MydetailModalOpen, setMyDetailModalOpen] = useState(false);
   return (
     <Fragment key="key">
       <Div>
@@ -60,11 +63,20 @@ function ViewMeetPage() {
         </div>
         <MeetingDiv>
           <MeetingHeaderDiv>
-            <MyMeetingHeader />
+            <MyMeetingHeader
+              setModalOpen={setModalOpen}
+              modalOpen={modalOpen}
+            />
           </MeetingHeaderDiv>
           <MeetingListDiv>
-            <MyMeetingList />
-            <EntireMeeting />
+            <MyMeetingList
+              setMyDetailModalOpen={setMyDetailModalOpen}
+              MydetailModalOpen={MydetailModalOpen}
+            />
+            <EntireMeeting
+              setDetailModalOpen={setDetailModalOpen}
+              detailModalOpen={detailModalOpen}
+            />
           </MeetingListDiv>
         </MeetingDiv>
       </Div>
