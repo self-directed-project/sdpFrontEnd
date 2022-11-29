@@ -4,8 +4,10 @@ import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ReactPaginate from 'react-paginate';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ViewMyDetails from './ViewMyDetails';
+import UpdateModal from './UpdateModal';
 
 const cookie = new Cookies();
 
@@ -19,6 +21,8 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
   const [MymeetingStart, setMyMeetingStart] = useState('');
   const [MymeetingEnd, setMyMeetingEnd] = useState('');
   const [MyattendList, setMyAttendList] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
   const changeAllCheck = (e) => {
     console.log(listArr);
@@ -65,16 +69,6 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
         if (window.confirm('정말 삭제 하시겠습니까?')) {
           window.location.reload();
         }
-        /*
-        console.log(checkedArr.length);
-        let newArr = listArr;
-        for (let i = 0; i < checkedArr.length; i++) {
-          newArr = newArr.filter((item) => item.meetingId !== checkedArr[i]);
-        }
-        setListArr(newArr);
-        window.location.reload();
-        console.log(newArr);
-        */
       });
     setIsCheckAll(false);
     setCheckedArr([]);
@@ -125,6 +119,24 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
         60
     );
   }
+  const handlePageClick = (data) => {
+    setListArr([]);
+    const params = {
+      page: data.selected,
+      size: 4
+    };
+    axios
+      .get('http://localhost:8080/meeting/mymeeting', {
+        withCredentials: true,
+        params
+      })
+      .then((res) => {
+        console.log(res);
+        const pCount = res.data.p_MyMeetings.totalPages;
+        setPageCount(pCount);
+        setListArr(res.data.p_MyMeetings.content);
+      });
+  };
 
   const meetingListClick = (item) => {
     setMyDetailModalOpen(true);
@@ -157,11 +169,20 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
   };
 
   useEffect(() => {
+    const params = {
+      page: 0,
+      size: 4
+    };
     axios
-      .get('http://localhost:8080/meeting/mymeeting', { withCredentials: true })
+      .get('http://localhost:8080/meeting/mymeeting', {
+        withCredentials: true,
+        params
+      })
       .then((res) => {
         console.log(res);
-        setListArr(res.data.myMeetings);
+        const pCount = res.data.p_MyMeetings.totalPages;
+        setPageCount(pCount);
+        setListArr(res.data.p_MyMeetings.content);
       });
   }, []);
   return (
@@ -237,6 +258,25 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
           ))}
         </ColorChangeBody>
       </ListTable>
+      <PagiNateDiv>
+        <ReactPaginate
+          previousLabel="<"
+          nextLabel=">"
+          breakLabel="..."
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={handlePageClick}
+          containerClassName="pagination justify-content-center"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextLinkClassName="page-link"
+          nextClassName="page-item"
+          activeClassName="active"
+        />
+      </PagiNateDiv>
       {MydetailModalOpen && (
         <ViewMyDetails
           setMyDetailModalOpen={setMyDetailModalOpen}
@@ -245,17 +285,24 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
           MymeetingStart={MymeetingStart}
           MymeetingEnd={MymeetingEnd}
           MyattendList={MyattendList}
+          setUpdateModalOpenInDetail={setUpdateModalOpen}
         />
+      )}
+      {updateModalOpen && (
+        <UpdateModal setUpdateModalOpen={setUpdateModalOpen} />
       )}
     </ViewMeeting>
   );
 }
 const ViewMeeting = styled.div`
+  position: relative;
   width: 95%;
   background: #ffffff;
   border-radius: 12px;
   background-color: white;
   padding: 20px;
+  margin-top: 20px;
+  height: 53%;
 `;
 const ViewMeetingHeader = styled.div`
   display: flex;
@@ -357,5 +404,85 @@ const DeleteDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+const PagiNateDiv = styled.div`
+  position: absolute;
+  bottom: 5px;
+  left: 40%;
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-right: 100px;
+  }
+
+  & ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  & ul.pagination li {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    margin: 10px;
+    border-radius: 50%;
+  }
+  & ul.pagination li:hover {
+    cursor: pointer;
+    background-color: #17c2e0;
+    opacity: 50%;
+    color: white;
+  }
+  & ul.pagination li:first-child:hover {
+    background-color: white;
+  }
+  & ul.pagination li:first-child a:hover {
+    color: #337ab7;
+  }
+  & ul.pagination li:last-child:hover {
+    background-color: white;
+  }
+  & ul.pagination li:last-child a:hover {
+    color: #337ab7;
+  }
+
+  & ul.pagination li:first-child {
+    border-radius: 50%;
+  }
+
+  & ul.pagination li:last-child {
+    border-radius: 50%;
+  }
+
+  & ul.pagination li a {
+    text-decoration: none;
+    color: #337ab7;
+    font-size: 1rem;
+  }
+
+  & ul.pagination li.active a {
+    color: white;
+  }
+
+  & ul.pagination li.active {
+    background-color: #17c2e0;
+    opacity: 80%;
+  }
+
+  & ul.pagination li a:hover,
+  & ul.pagination li a.active {
+    color: white;
+  }
+
+  .page-selection {
+    width: 48px;
+    height: 30px;
+    color: #337ab7;
+  }
 `;
 export default MyMeetingList;

@@ -24,7 +24,7 @@ const MeetingDiv = styled.div`
 `;
 const MeetingHeaderDiv = styled.div`
   width: 100%;
-  height: 20%;
+  height: 15%;
   font-family: 'Spoqa Han Sans Neo';
   font-weight: 700;
   font-size: 26px;
@@ -37,7 +37,7 @@ const MeetingListDiv = styled.div`
   justify-content: space-between;
   padding: 20px;
   width: 100%;
-  height: 80%;
+  height: 100%;
   font-family: 'Spoqa Han Sans Neo';
 `;
 
