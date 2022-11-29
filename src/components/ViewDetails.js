@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/button-has-type */
-import { React } from 'react';
+import { React, useState } from 'react';
 import { Cookies } from 'react-cookie';
 import styled from 'styled-components';
 import ClearIcon from '@mui/icons-material/Clear';
+import UpdateModal from './UpdateModal';
 
 const MainDiv = styled.div`
   display: flex;
@@ -129,7 +130,8 @@ function ViewDetails({
   meetingName,
   meetingStart,
   meetingEnd,
-  attendList
+  attendList,
+  setUpdateModalOpenInDetail
 }) {
   const onCloseModal = (e) => {
     if (e.target === e.currentTarget) {
@@ -153,13 +155,23 @@ function ViewDetails({
   const week = ['일', '월', '화', '수', '목', '금', '토'];
   const dayOfWeek = week[date.getDay()];
 
+  const UpdateModalHandler = () => {
+    setUpdateModalOpenInDetail(true);
+    setDetailModalOpen(false);
+  };
+
   return (
     // 모달창을 useRef로 잡아준다.
     <MainDiv onClick={onCloseModal}>
       <Div>
         <HeaderDiv>
           <HeaderDivName>{`${meetingId}회의실`}</HeaderDivName>
-          <DeleteIcon onClick={onCloseModalcon} />
+          <div>
+            <button type="button" onClick={UpdateModalHandler}>
+              Update
+            </button>
+            <DeleteIcon onClick={onCloseModalcon} />
+          </div>
         </HeaderDiv>
         <BodyStartDiv>
           <div>{meetingName}</div>

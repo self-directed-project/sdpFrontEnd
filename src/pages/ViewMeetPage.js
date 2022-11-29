@@ -31,6 +31,11 @@ const MeetingHeaderDiv = styled.div`
   line-height: 32.55px;
 `;
 const MeetingListDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
   width: 100%;
   height: 80%;
   font-family: 'Spoqa Han Sans Neo';
@@ -69,13 +74,13 @@ function ViewMeetPage() {
             />
           </MeetingHeaderDiv>
           <MeetingListDiv>
-            <MyMeetingList
-              setMyDetailModalOpen={setMyDetailModalOpen}
-              MydetailModalOpen={MydetailModalOpen}
-            />
             <EntireMeeting
               setDetailModalOpen={setDetailModalOpen}
               detailModalOpen={detailModalOpen}
+            />
+            <MyMeetingList
+              setMyDetailModalOpen={setMyDetailModalOpen}
+              MydetailModalOpen={MydetailModalOpen}
             />
           </MeetingListDiv>
         </MeetingDiv>

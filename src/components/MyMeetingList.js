@@ -62,13 +62,19 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
       })
       .then((res) => {
         console.log(res);
+        if (window.confirm('정말 삭제 하시겠습니까?')) {
+          window.location.reload();
+        }
+        /*
         console.log(checkedArr.length);
         let newArr = listArr;
         for (let i = 0; i < checkedArr.length; i++) {
           newArr = newArr.filter((item) => item.meetingId !== checkedArr[i]);
         }
         setListArr(newArr);
+        window.location.reload();
         console.log(newArr);
+        */
       });
     setIsCheckAll(false);
     setCheckedArr([]);
@@ -245,10 +251,7 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
   );
 }
 const ViewMeeting = styled.div`
-  position: absolute;
-  left: 290px;
-  top: 730px;
-  width: 87%;
+  width: 95%;
   background: #ffffff;
   border-radius: 12px;
   background-color: white;

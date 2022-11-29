@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
 import ViewDetails from './ViewDetails';
+import UpdateModal from './UpdateModal';
 
 const cookie = new Cookies();
 
@@ -17,6 +18,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   const [meetingStart, setMeetingStart] = useState('');
   const [meetingEnd, setMeetingEnd] = useState('');
   const [attendList, setAttendList] = useState([]);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   let pageCount = 0;
 
   function TotalMinut(item) {
@@ -182,7 +184,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
           previousLabel="<"
           nextLabel=">"
           breakLabel="..."
-          pageCount={pageCount}
+          pageCount={5}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
@@ -204,16 +206,17 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
           meetingStart={meetingStart}
           meetingEnd={meetingEnd}
           attendList={attendList}
+          setUpdateModalOpenInDetail={setUpdateModalOpen}
         />
+      )}
+      {updateModalOpen && (
+        <UpdateModal setUpdateModalOpen={setUpdateModalOpen} />
       )}
     </ViewMeeting>
   );
 }
 const ViewMeeting = styled.div`
-  position: absolute;
-  left: 290px;
-  top: 180px;
-  width: 87%;
+  width: 95%;
   background: #ffffff;
   border-radius: 12px;
   background-color: white;

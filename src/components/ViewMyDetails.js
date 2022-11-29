@@ -118,6 +118,9 @@ const MeetingContentUl = styled.ul`
     display: none;
   }
 `;
+const ColorDiv = styled.div`
+  color: #888888;
+`;
 
 const cookie = new Cookies();
 
@@ -169,7 +172,7 @@ function ViewMyDetails({
           )} ~ ${MymeetingEnd.substring(8)}`}</div>
         </BodyStartDiv>
         <BodyDataDiv>
-          <div>참석자</div>
+          <ColorDiv>참석자</ColorDiv>
           <BodyDataInfo>
             {MyattendList.map((list, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -178,7 +181,7 @@ function ViewMyDetails({
           </BodyDataInfo>
         </BodyDataDiv>
         <MeetingContentDiv>
-          <div>회의 내용</div>
+          <ColorDiv>회의 내용</ColorDiv>
           <form>
             <MeetingContentUl>
               <div>회의내용</div>
