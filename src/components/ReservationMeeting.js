@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useEffect, useState } from 'react';
+import AutoComplete from './AutoComplete/AutoComplete';
 
 function ReservationMeeting() {
   const hourArr = [
@@ -16,8 +17,6 @@ function ReservationMeeting() {
     '08',
     '09',
     '10',
-    '11',
-    '12',
     '11',
     '12',
     '13',
@@ -35,6 +34,7 @@ function ReservationMeeting() {
   const minuteArr = ['00', '30'];
   const inputList = {
     inputMeetingName: '',
+    inputMemberId: [],
     inputDate: '',
     inputMeetingRoomId: 0,
     inputType: '',
@@ -47,7 +47,7 @@ function ReservationMeeting() {
 
   const [list, setList] = useState([]);
   const [gType, setgType] = useState([]);
-  const [memberList, setMemberList] = useState([]);
+  const [attendeesId, setAttendeesId] = useState([]);
   const getList = async () => {
     try {
       const res = await axios.get('http://localhost:8080/meeting/reserve');
@@ -57,42 +57,27 @@ function ReservationMeeting() {
       console.log(error);
     }
   };
-  const postList = async () => {
+
+  const getAttendees = (card) => {
+    setAttendeesId(card);
+    attendeesId.map((item) => inputList.inputMemberId.push(Number(item.id)));
+    const uniq = (arr) => [[...new Set(arr)]];
+    const uniqArr = uniq(inputList.inputMemberId)[0];
+    inputList.inputMemberId = uniqArr;
+  };
+  const postList = async (event) => {
     const start = `${inputList.inputDate}T${inputList.inputStartHour}:${inputList.inputStartMin}`;
     const end = `${inputList.inputDate}T${inputList.inputEndHour}:${inputList.inputEndMin}`;
     try {
       axios.post('http://localhost:8080/meeting/reserve', {
-        name: '개발 1팀회의',
-        membersId: [1, 2],
+        name: inputList.inputMeetingName,
+        membersId: inputList.inputMemberId,
         meetingRoomId: Number(`${inputList.inputMeetingRoomId}`),
         type: `${inputList.inputType}`,
         start: `${start}`,
         end: `${end}`,
         description: `${inputList.inputDescription}`
       });
-      console.log({
-        name: `${inputList.inputMeetingName}`,
-        membersId: [1, 2],
-        meetingRoomId: Number(`${inputList.inputMeetingRoomId}`),
-        type: `${inputList.inputType}`,
-        start: `${start}`,
-        end: `${end}`,
-        description: `${inputList.inputDescription}`
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getMember = async (gName) => {
-    const params = { name: `${gName}` };
-    try {
-      const res = await axios.get(
-        'http://localhost:8080/meeting/reserve/search',
-        {
-          params
-        }
-      );
-      setMemberList(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -103,33 +88,12 @@ function ReservationMeeting() {
   return (
     <EntireDiv>
       <Header>
-        <MainTitle>예약 하기</MainTitle>
+        <MainTitle>주간 회의</MainTitle>
         <Close />
       </Header>
       <Form>
-        <Div>
-          <TextSpan>회의명</TextSpan>
-          <Input
-            type="text"
-            onChange={(event) => {
-              inputList.inputMeetingName = event.target.value;
-            }}
-          />
-        </Div>
         <TextDiv>참석자</TextDiv>
-        <AttendeesInput
-          type="text"
-          list="memberLi"
-          onChange={(event) => {
-            getMember(event.target.value);
-          }}
-        />
-        <datalist id="memberLi">
-          {memberList.map((item) => (
-            <option id={item.id} value={item.name} />
-          ))}
-        </datalist>
-        <AttendeesList />
+        <AutoComplete getAttendees={getAttendees} />
         <Div>
           <TextLabel htmlFor="meetingRoomList">회의실</TextLabel>
           <Select
@@ -231,7 +195,7 @@ function ReservationMeeting() {
             inputList.inputDescription = event.target.value;
           }}
         />
-        <Btn type="submit" value="예약하기" onClick={postList} />
+        <Btn type="submit" value="예약수정" onClick={postList} />
       </Form>
     </EntireDiv>
   );
@@ -285,22 +249,6 @@ const Select = styled.select`
   }
 `;
 
-const AttendeesInput = styled.input`
-  border: 0;
-  border-bottom: 1px solid #d7e3f1;
-  width: 377px;
-  height: 60px;
-  outline: 0;
-  font-size: 18px;
-  font-weight: 500;
-  &:focus {
-    border-bottom: 2px solid #0594ff;
-  }
-`;
-
-const AttendeesList = styled.div`
-  height: 120px;
-`;
 const TimeSelect = styled.select`
   border: 0;
   border-bottom: 1px solid #d7e3f1;
