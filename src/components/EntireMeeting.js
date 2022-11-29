@@ -5,11 +5,21 @@ import { Cookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
+import ViewDetails from './ViewDetails';
+import UpdateModal from './UpdateModal';
 
 const cookie = new Cookies();
 
-function MyMeetingList() {
+// eslint-disable-next-line react/prop-types
+function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   const [listArr, setListArr] = useState([]);
+  const [meetingId, setMeetingId] = useState('');
+  const [meetingName, setMeetingName] = useState('');
+  const [meetingStart, setMeetingStart] = useState('');
+  const [meetingEnd, setMeetingEnd] = useState('');
+  const [attendList, setAttendList] = useState([]);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  let pageCount = 0;
 
   function TotalMinut(item) {
     return (
@@ -59,20 +69,45 @@ function MyMeetingList() {
   }
 
   const handlePageClick = (data) => {
-    const Size = 4;
-    console.log(data.selected + 1);
+    const pageInfo = {
+      curPage: data.selected
+    };
     axios
       .get('http://localhost:8080/meeting/all', {
         withCredentials: true,
-        page: data.selected,
-        pageSize: Size
+        pageInfo
       })
       .then((res) => {
         console.log(res);
         console.log(listArr);
+        pageCount = Math.ceil(12 / 4);
         setListArr(res.data.meetings.content);
         console.log(listArr);
       });
+  };
+  const meetingListClick = (item) => {
+    setDetailModalOpen(true);
+    setMeetingId(item.meetingRoomId);
+    setMeetingName(item.name);
+    setMeetingStart(item.start);
+    setMeetingEnd(item.end);
+    const params = {
+      start: item.start,
+      meetingRoomId: item.meetingRoomId
+    };
+    axios
+      .get('http://localhost:8080/meeting/detailPage', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
+        withCredentials: true,
+        params
+      })
+      .then((res) => {
+        console.log(res);
+        setAttendList(res.data.detail.nameList);
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -88,6 +123,7 @@ function MyMeetingList() {
         })
         .then((res) => {
           console.log(res.data);
+          pageCount = Math.ceil(12 / 4);
           setListArr(res.data.meetings.content);
         });
     } catch (error) {
@@ -103,8 +139,8 @@ function MyMeetingList() {
         <thead>
           <ViewMeetingListTr>
             <td>No</td>
-            <td>회의명</td>
-            <ViewMeetingListTd>회의 일시</ViewMeetingListTd>
+            <ViewMeetingListTd>회의명</ViewMeetingListTd>
+            <td>회의 일시</td>
             <td>회의 시간</td>
             <td>회의실</td>
             <td>개설자</td>
@@ -113,7 +149,7 @@ function MyMeetingList() {
         <ColorChangeBody>
           {console.log(listArr)}
           {listArr?.map((item) => (
-            <tr key={item.meetingRoomId}>
+            <tr key={item.meetingRoomId} onClick={() => meetingListClick(item)}>
               <td>{item.meetingRoomId}</td>
               <td>
                 <MeetingRoomColorDiv>
@@ -137,7 +173,7 @@ function MyMeetingList() {
                     : `${EndBigThanStartMinut(item)}분`
                   : `${EndBigThanStartHour(item)}시간`}
               </MeetingTime>
-              <td>{item.name}</td>
+              <td>{`회의실${item.meetingRoomId}`}</td>
               <td>{item.name}</td>
             </tr>
           ))}
@@ -148,7 +184,7 @@ function MyMeetingList() {
           previousLabel="<"
           nextLabel=">"
           breakLabel="..."
-          pageCount={10}
+          pageCount={5}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
@@ -162,14 +198,25 @@ function MyMeetingList() {
           activeClassName="active"
         />
       </PagiNateDiv>
+      {detailModalOpen && (
+        <ViewDetails
+          setDetailModalOpen={setDetailModalOpen}
+          meetingId={meetingId}
+          meetingName={meetingName}
+          meetingStart={meetingStart}
+          meetingEnd={meetingEnd}
+          attendList={attendList}
+          setUpdateModalOpenInDetail={setUpdateModalOpen}
+        />
+      )}
+      {updateModalOpen && (
+        <UpdateModal setUpdateModalOpen={setUpdateModalOpen} />
+      )}
     </ViewMeeting>
   );
 }
 const ViewMeeting = styled.div`
-  position: absolute;
-  left: 290px;
-  top: 180px;
-  width: 87%;
+  width: 95%;
   background: #ffffff;
   border-radius: 12px;
   background-color: white;
@@ -219,6 +266,7 @@ const ViewMeetingListTr = styled.tr`
 
   & td {
     color: rgba(0, 0, 0, 0.5);
+    width: 20%;
   }
   & td:nth-child(1) {
     width: 30px;
@@ -239,12 +287,15 @@ const ColorChangeBody = styled.tbody`
 `;
 
 const MeetingRoomColorDiv = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  padding-left: 40px;
 `;
 
 const MeetingRoomColor = styled.div`
+  left: -90px;
   width: 10px;
   height: 10px;
   background-color: ${(props) => {
@@ -343,4 +394,4 @@ const PagiNateDiv = styled.div`
     color: #337ab7;
   }
 `;
-export default MyMeetingList;
+export default EntireMeeting;

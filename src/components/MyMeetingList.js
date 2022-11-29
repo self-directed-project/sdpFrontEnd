@@ -1,18 +1,29 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-nested-ternary */
 import axios from 'axios';
+import { Cookies } from 'react-cookie';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ViewMyDetails from './ViewMyDetails';
 
-function MyMeetingList() {
+const cookie = new Cookies();
+
+// eslint-disable-next-line react/prop-types
+function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
   const [listArr, setListArr] = useState([]);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checkedArr, setCheckedArr] = useState([]);
+  const [MymeetingID, setMyMeetingID] = useState('');
+  const [MymeetingName, setMyMeetingName] = useState('');
+  const [MymeetingStart, setMyMeetingStart] = useState('');
+  const [MymeetingEnd, setMyMeetingEnd] = useState('');
+  const [MyattendList, setMyAttendList] = useState([]);
 
   const changeAllCheck = (e) => {
     console.log(listArr);
     if (isCheckAll === false) {
-      const allArr = listArr.map((item) => item.name);
+      const allArr = listArr.map((item) => item.meetingId);
       setCheckedArr(allArr);
       setIsCheckAll(true);
       for (let i = 0; i < listArr.length; i++) {
@@ -28,12 +39,12 @@ function MyMeetingList() {
     }
   };
 
-  const checkingCheckedBox = (name, e) => {
+  const checkingCheckedBox = (meetingId, e) => {
     if (e.target.checked === false) {
-      const newArr = checkedArr.filter((item) => item !== name);
+      const newArr = checkedArr.filter((item) => item !== meetingId);
       setCheckedArr(newArr);
     } else {
-      setCheckedArr((prev) => [...prev, name]);
+      setCheckedArr((prev) => [...prev, meetingId]);
     }
     if (isCheckAll === true) {
       setIsCheckAll(false);
@@ -42,12 +53,28 @@ function MyMeetingList() {
   };
   const deleteList = () => {
     axios
-      .post('http://localhost:8080/meeting/mymeeting', {
+      .post('http://localhost:8080/meeting/delete', {
+        headers: {
+          Authorization: `Bearer ${cookie.get('JSESSIONID')}`
+        },
         withCredentials: true,
-        data: checkedArr
+        meetingsId: checkedArr
       })
       .then((res) => {
-        console.log(res.data);
+        console.log(res);
+        if (window.confirm('정말 삭제 하시겠습니까?')) {
+          window.location.reload();
+        }
+        /*
+        console.log(checkedArr.length);
+        let newArr = listArr;
+        for (let i = 0; i < checkedArr.length; i++) {
+          newArr = newArr.filter((item) => item.meetingId !== checkedArr[i]);
+        }
+        setListArr(newArr);
+        window.location.reload();
+        console.log(newArr);
+        */
       });
     setIsCheckAll(false);
     setCheckedArr([]);
@@ -99,6 +126,36 @@ function MyMeetingList() {
     );
   }
 
+  const meetingListClick = (item) => {
+    setMyDetailModalOpen(true);
+    setMyMeetingID(item.meetingRoomId);
+    setMyMeetingName(item.name);
+    setMyMeetingStart(item.start);
+    setMyMeetingEnd(item.end);
+
+    const params = {
+      start: item.start,
+      meetingRoomId: item.meetingRoomId
+    };
+    axios
+      .get('http://localhost:8080/meeting/detailPage', {
+        withCredentials: true,
+        params
+      })
+      .then((res) => {
+        console.log(res);
+        setMyAttendList(res.data.detail.nameList);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onCloseAllInput = () => {
+    setMyDetailModalOpen(false);
+  };
+  const onCloseInput = () => {
+    setMyDetailModalOpen(false);
+  };
+
   useEffect(() => {
     axios
       .get('http://localhost:8080/meeting/mymeeting', { withCredentials: true })
@@ -126,35 +183,38 @@ function MyMeetingList() {
                 type="checkbox"
                 onChange={(e) => changeAllCheck(e.target.checked)}
                 checked={checkedArr.length === listArr.length}
+                onClick={onCloseAllInput}
               />
             </td>
-            <td>회의명</td>
-            <ViewMeetingListTd>회의 일시</ViewMeetingListTd>
+            <ViewMeetingListTd>회의명</ViewMeetingListTd>
+            <td>회의 일시</td>
             <td>회의 시간</td>
             <td>회의실</td>
             <td>개설자</td>
           </ViewMeetingListTr>
         </thead>
         <ColorChangeBody>
+          {console.log(checkedArr)}
           {listArr.map((item) => (
             <tr>
               <td>
                 <input
                   type="checkbox"
                   onClick={(e) => {
-                    checkingCheckedBox(item.name, e);
+                    checkingCheckedBox(item.meetingId, e);
+                    onCloseInput();
                   }}
-                  checked={!!checkedArr.includes(item.name)}
+                  checked={!!checkedArr.includes(item.meetingId)}
                 />
               </td>
-              <td>
+              <td onClick={() => meetingListClick(item)}>
                 <MeetingRoomColorDiv>
                   <MeetingRoomColor type={item.type} />
                   <span>{item.name}</span>
                 </MeetingRoomColorDiv>
               </td>
-              <td>{item.start}</td>
-              <MeetingTime>
+              <td onClick={() => meetingListClick(item)}>{item.start}</td>
+              <MeetingTime onClick={() => meetingListClick(item)}>
                 {TotalMinut(item) < 0
                   ? EndSmallThanStartMinut(item) !== 0
                     ? `${EndSmallThanStartHour(
@@ -169,20 +229,29 @@ function MyMeetingList() {
                     : `${EndBigThanStartMinut(item)}분`
                   : `${EndBigThanStartHour(item)}시간`}
               </MeetingTime>
-              <td>{`회의실${item.meetingRoomId}`}</td>
-              <td>{item.createdBy}</td>
+              <td
+                onClick={() => meetingListClick(item)}
+              >{`회의실${item.meetingRoomId}`}</td>
+              <td onClick={() => meetingListClick(item)}>{item.createdBy}</td>
             </tr>
           ))}
         </ColorChangeBody>
       </ListTable>
+      {MydetailModalOpen && (
+        <ViewMyDetails
+          setMyDetailModalOpen={setMyDetailModalOpen}
+          MymeetingId={MymeetingID}
+          MymeetingName={MymeetingName}
+          MymeetingStart={MymeetingStart}
+          MymeetingEnd={MymeetingEnd}
+          MyattendList={MyattendList}
+        />
+      )}
     </ViewMeeting>
   );
 }
 const ViewMeeting = styled.div`
-  position: absolute;
-  left: 290px;
-  top: 730px;
-  width: 87%;
+  width: 95%;
   background: #ffffff;
   border-radius: 12px;
   background-color: white;
@@ -215,6 +284,7 @@ const ListTable = styled.table`
   width: 100%;
   text-align: center;
   font-size: 20px;
+  border-radius: 10px;
 
   & th {
     padding: 20px;
@@ -231,6 +301,7 @@ const ViewMeetingListTr = styled.tr`
 
   & td {
     color: rgba(0, 0, 0, 0.5);
+    width: 20%;
   }
   & td:nth-child(1) {
     width: 30px;
@@ -251,9 +322,11 @@ const ColorChangeBody = styled.tbody`
 `;
 
 const MeetingRoomColorDiv = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  padding-left: 40px;
 `;
 const MeetingRoomColor = styled.div`
   width: 10px;

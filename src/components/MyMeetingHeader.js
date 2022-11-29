@@ -1,11 +1,13 @@
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import NotesIcon from '@mui/icons-material/Notes';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingIcon from './SettingIcon';
+import LogoutModal from './LogoutModal';
 
 const HeaderMainDiv = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,6 +18,8 @@ const HeaderDiv = styled.div`
   justify-content: left;
   align-items: center;
   width: 100%;
+  height: 100%;
+  padding: 30px;
 `;
 const ColorSpan = styled.div`
   display: flex;
@@ -47,15 +51,15 @@ const ColorDiv = styled.div`
 
 const HeaderDivSeeting = styled.div`
   position: absolute;
-  top: -50px;
-  right: 0px;
+  top: 40px;
+  right: 50px;
   display: flex;
   justify-items: center;
   align-items: center;
-  padding: 50px;
 `;
 
 const AllamIcon = styled(NotificationsIcon)`
+  position: relative;
   background-color: white;
   color: #4a5568;
   width: 80px;
@@ -70,15 +74,27 @@ const AllamIconDiv = styled.div`
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  top: 58px;
-  left: 51px;
+  top: 8px;
   background-color: #ff4545;
 `;
 
-function MyMeetingList() {
+// eslint-disable-next-line react/prop-types
+function MyMeetingList({ setModalOpen, modalOpen }) {
+  const outside = useRef();
+  const handleClickOutside = ({ target }) => {
+    if (modalOpen && !outside.current.contains(target) === false) {
+      setModalOpen(false);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('click', handleClickOutside);
+    };
+  });
   return (
     <HeaderMainDiv>
-      <HeaderDiv>
+      <HeaderDiv ref={outside} onClick={handleClickOutside}>
         <p>내 회의 보기</p>
         <ColorSpan>
           <ColorSpanType>
@@ -98,7 +114,8 @@ function MyMeetingList() {
       <HeaderDivSeeting>
         <AllamIcon />
         <AllamIconDiv />
-        <SettingIcon />
+        <SettingIcon setModalOpen={setModalOpen} />
+        {modalOpen && <LogoutModal setModalOpen={setModalOpen} />}
       </HeaderDivSeeting>
     </HeaderMainDiv>
   );

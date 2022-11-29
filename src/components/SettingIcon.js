@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
 
 const Div = styled.div`
@@ -36,17 +37,23 @@ const SmallLine = styled.div`
   text-align: left;
 `;
 
-function SettingIcon() {
+// eslint-disable-next-line react/prop-types
+function SettingIcon({ setModalOpen }) {
+  const settingCLick = (e) => {
+    setModalOpen(true);
+  };
   return (
-    <Div>
-      <BigDiv>
-        <BigLine />
-        <BigLine />
-      </BigDiv>
-      <SmallDiv>
-        <SmallLine />
-      </SmallDiv>
-    </Div>
+    <div>
+      <Div onClick={settingCLick}>
+        <BigDiv>
+          <BigLine />
+          <BigLine />
+        </BigDiv>
+        <SmallDiv>
+          <SmallLine />
+        </SmallDiv>
+      </Div>
+    </div>
   );
 }
 export default SettingIcon;

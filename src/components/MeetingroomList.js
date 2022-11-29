@@ -107,6 +107,9 @@ const List = styled.div`
   width: 250px;
   font-family: 'Spoqa Han Sans Neo';
   font-weight: 400;
+  border: 1px solid white;
+  background-color: white;
+  height: 100vh;
 `;
 
 const MainTitle = styled.div`
