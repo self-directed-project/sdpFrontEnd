@@ -147,7 +147,7 @@ function MyMeetingList({ setMyDetailModalOpen, MydetailModalOpen }) {
 
     const params = {
       start: item.start,
-      meetingRoomId: item.meetingRoomId
+      meetingId: item.meetingId
     };
     axios
       .get('http://localhost:8080/meeting/detailPage', {

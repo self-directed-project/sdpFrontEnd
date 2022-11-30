@@ -180,13 +180,7 @@ function ViewMyDetails({
         <HeaderDiv>
           <HeaderDivName>{`${MymeetingId}회의실`}</HeaderDivName>
           <div>
-            <DateInput
-              type="date"
-              data-placeholder="22-11-09"
-              required
-              aria-required="true"
-              value="ToDay"
-            />
+            <button type="button">수정하기</button>
             <DeleteIcon onClick={onCloseModalcon} />
           </div>
         </HeaderDiv>
