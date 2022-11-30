@@ -35,6 +35,14 @@ const HeaderDiv = styled.div`
   align-items: center;
   margin-bottom: 35px;
 `;
+const UpdateBtn = styled.button`
+  border-radius: 10%;
+  border: none;
+  padding: 5px 10px;
+`;
+const HeaderRightDiv = styled.div`
+  display: flex;
+`;
 const HeaderDivName = styled.div`
   background-color: #cef2f9;
   color: #17c2e0;
@@ -166,12 +174,12 @@ function ViewDetails({
       <Div>
         <HeaderDiv>
           <HeaderDivName>{`${meetingId}회의실`}</HeaderDivName>
-          <div>
-            <button type="button" onClick={UpdateModalHandler}>
-              Update
-            </button>
+          <HeaderRightDiv>
+            <UpdateBtn type="button" onClick={UpdateModalHandler}>
+              수정하기
+            </UpdateBtn>
             <DeleteIcon onClick={onCloseModalcon} />
-          </div>
+          </HeaderRightDiv>
         </HeaderDiv>
         <BodyStartDiv>
           <div>{meetingName}</div>

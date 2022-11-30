@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { PropTypes } from 'prop-types';
 import CardList from './CardList';
 
-const AutoComplete = ({ getAttendees }) => {
+const AutoComplete = ({ getAttendees, width, isMembers }) => {
   const [inputVal, setInputVal] = useState('');
   const [isHavaInputVal, setIsHavaInputVal] = useState(false);
   const [List, setLIst] = useState([]);
@@ -78,18 +78,27 @@ const AutoComplete = ({ getAttendees }) => {
           type="text"
           value={inputVal}
           onChange={changeInputVal}
+          width={width}
         />
       </div>
       {isHavaInputVal && <BtnDiv>{listItems}</BtnDiv>}
-      <AttendeesList>
-        <CardList cardList={nameCard} onDelete={handleDelete} />
-      </AttendeesList>
+      {{ isMembers } ? (
+        <AttendeesList>
+          <CardList cardList={nameCard} onDelete={handleDelete} />
+        </AttendeesList>
+      ) : (
+        <AttendeesList>
+          <CardList cardList={nameCard} onDelete={handleDelete} />
+        </AttendeesList>
+      )}
     </div>
   );
 };
 
 AutoComplete.propTypes = {
-  getAttendees: PropTypes.func.isRequired
+  getAttendees: PropTypes.func.isRequired,
+  width: PropTypes.string.isRequired,
+  isMembers: PropTypes.bool.isRequired
 };
 
 const BtnDiv = styled.div`
@@ -125,7 +134,7 @@ const AttendeesBtn = styled.button`
 const AttendeesInput = styled.input`
   border: 0;
   border-bottom: 1px solid #d7e3f1;
-  width: 390px;
+  width: ${(props) => props.width};
   height: 60px;
   outline: 0;
   font-size: 18px;

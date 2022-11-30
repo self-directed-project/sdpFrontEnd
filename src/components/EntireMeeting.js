@@ -87,7 +87,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   };
   const meetingListClick = (item) => {
     setDetailModalOpen(true);
-    setMeetingId(item.meetingRoomId);
+    setMeetingId(item.meetingId);
     setMeetingName(item.name);
     setMeetingStart(item.start);
     setMeetingEnd(item.end);
@@ -149,8 +149,8 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
         <ColorChangeBody>
           {console.log(listArr)}
           {listArr?.map((item) => (
-            <tr key={item.meetingRoomId} onClick={() => meetingListClick(item)}>
-              <td>{item.meetingRoomId}</td>
+            <tr key={item.meetingId} onClick={() => meetingListClick(item)}>
+              <td>{item.meetingId}</td>
               <td>
                 <MeetingRoomColorDiv>
                   <MeetingRoomColor type={item.type} />
@@ -174,7 +174,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
                   : `${EndBigThanStartHour(item)}시간`}
               </MeetingTime>
               <td>{`회의실${item.meetingRoomId}`}</td>
-              <td>{item.name}</td>
+              <td>{item.createdBy}</td>
             </tr>
           ))}
         </ColorChangeBody>
@@ -210,7 +210,10 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
         />
       )}
       {updateModalOpen && (
-        <UpdateModal setUpdateModalOpen={setUpdateModalOpen} />
+        <UpdateModal
+          setUpdateModalOpen={setUpdateModalOpen}
+          meetingId={meetingId}
+        />
       )}
     </ViewMeeting>
   );
