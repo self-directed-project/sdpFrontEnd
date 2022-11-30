@@ -88,12 +88,21 @@ function ReservationMeeting() {
   return (
     <EntireDiv>
       <Header>
-        <MainTitle>주간 회의</MainTitle>
+        <MainTitle>예약하기</MainTitle>
         <Close />
       </Header>
       <Form>
+        <Div>
+          <TextLabel>회의명</TextLabel>
+          <Input
+            type="text"
+            onChange={(event) => {
+              inputList.inputMeetingName = event.target.value;
+            }}
+          />
+        </Div>
         <TextDiv>참석자</TextDiv>
-        <AutoComplete getAttendees={getAttendees} />
+        <AutoComplete getAttendees={getAttendees} width="390px" />
         <Div>
           <TextLabel htmlFor="meetingRoomList">회의실</TextLabel>
           <Select
@@ -195,7 +204,7 @@ function ReservationMeeting() {
             inputList.inputDescription = event.target.value;
           }}
         />
-        <Btn type="submit" value="예약수정" onClick={postList} />
+        <Btn type="submit" value="예약하기" onClick={postList} />
       </Form>
     </EntireDiv>
   );

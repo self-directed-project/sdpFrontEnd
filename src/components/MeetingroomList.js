@@ -14,6 +14,7 @@ const cookie = new Cookies();
 function MeetingroomList() {
   const [fav, setFav] = useState([]);
   const [nonFav, setNonFav] = useState([]);
+  const [isClick, setIsClick] = useState(false);
   const navigate = useNavigate();
   const getMeetingroom = async () => {
     try {
@@ -53,6 +54,14 @@ function MeetingroomList() {
     const { id } = event.currentTarget;
     postMeetingroom(id);
   };
+  const handleClickBtn = () => {
+    setIsClick(!isClick);
+    if (isClick) {
+      navigate('/main/login');
+    } else if (!isClick) {
+      navigate('/mymeeting');
+    }
+  };
 
   useEffect(() => {
     getMeetingroom();
@@ -63,7 +72,7 @@ function MeetingroomList() {
         <OurMeetingIcon />
         <h2>OUR MEETING</h2>
       </MainTitle>
-      <ViewMeetingBtn type="button" onClick={() => navigate('/mymeeting')}>
+      <ViewMeetingBtn type="button" onClick={handleClickBtn}>
         내 회의 보기
       </ViewMeetingBtn>
       <Title>자주 찾는 회의실</Title>
