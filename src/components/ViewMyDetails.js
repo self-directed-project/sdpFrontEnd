@@ -121,6 +121,19 @@ const MeetingContentUl = styled.ul`
 const ColorDiv = styled.div`
   color: #888888;
 `;
+const DateInput = styled.input`
+  &::before {
+    content: attr(data-placeholder);
+    width: 100%;
+  }
+
+  &:focus::before {
+    display: none;
+  }
+  &:valid::before {
+    display: none;
+  }
+`;
 
 const cookie = new Cookies();
 
@@ -131,7 +144,8 @@ function ViewMyDetails({
   MymeetingName,
   MymeetingStart,
   MymeetingEnd,
-  MyattendList
+  MyattendList,
+  setUpdateModalOpenInDetail
 }) {
   console.log(MymeetingId, MymeetingStart, MymeetingEnd);
   const onCloseModal = (e) => {
@@ -154,13 +168,21 @@ function ViewMyDetails({
   const week = ['일', '월', '화', '수', '목', '금', '토'];
   const dayOfWeek = week[date.getDay()];
 
+  const UpdateModalHandler = () => {
+    setMyDetailModalOpen(false);
+    setUpdateModalOpenInDetail(true);
+  };
+
   return (
     // 모달창을 useRef로 잡아준다.
     <MainDiv onClick={onCloseModal}>
       <Div>
         <HeaderDiv>
           <HeaderDivName>{`${MymeetingId}회의실`}</HeaderDivName>
-          <DeleteIcon onClick={onCloseModalcon} />
+          <div>
+            <button type="button">수정하기</button>
+            <DeleteIcon onClick={onCloseModalcon} />
+          </div>
         </HeaderDiv>
         <BodyStartDiv>
           <div>{MymeetingName}</div>
