@@ -19,7 +19,9 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   const [meetingEnd, setMeetingEnd] = useState('');
   const [attendList, setAttendList] = useState([]);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  let pageCount = 0;
+  const [pageCount, setPageCount] = useState(0);
+
+  console.log(listArr);
 
   function TotalMinut(item) {
     return (
@@ -69,20 +71,21 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   }
 
   const handlePageClick = (data) => {
-    const pageInfo = {
-      curPage: data.selected
+    setListArr([]);
+    const params = {
+      page: data.selected,
+      size: 4
     };
     axios
       .get('http://localhost:8080/meeting/all', {
         withCredentials: true,
-        pageInfo
+        params
       })
       .then((res) => {
         console.log(res);
-        console.log(listArr);
-        pageCount = Math.ceil(12 / 4);
-        setListArr(res.data.meetings.content);
-        console.log(listArr);
+        const pCount = res.data.p_Meetings.totalPages;
+        setPageCount(pCount);
+        setListArr(res.data.p_Meetings.content);
       });
   };
   const meetingListClick = (item) => {
@@ -93,7 +96,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
     setMeetingEnd(item.end);
     const params = {
       start: item.start,
-      meetingRoomId: item.meetingRoomId
+      meetingId: item.meetingId
     };
     axios
       .get('http://localhost:8080/meeting/detailPage', {
@@ -111,6 +114,10 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   };
 
   useEffect(() => {
+    const params = {
+      page: 0,
+      size: 4
+    };
     try {
       axios
         .get('http://localhost:8080/meeting/all', {
@@ -118,13 +125,13 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
             Authorization: `Bearer ${cookie.get('JSESSIONID')}`
           },
           withCredentials: true,
-          pageNumber: 0,
-          pageSize: 4
+          params
         })
         .then((res) => {
-          console.log(res.data);
-          pageCount = Math.ceil(12 / 4);
-          setListArr(res.data.meetings.content);
+          console.log(res);
+          const pCount = res.data.p_Meetings.totalPages;
+          setPageCount(pCount);
+          setListArr(res.data.p_Meetings.content);
         });
     } catch (error) {
       console.log(error);
@@ -148,8 +155,8 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
         </thead>
         <ColorChangeBody>
           {console.log(listArr)}
-          {listArr?.map((item) => (
-            <tr key={item.meetingId} onClick={() => meetingListClick(item)}>
+          {listArr.map((item) => (
+            <tr key={item.meetingRoomId} onClick={() => meetingListClick(item)}>
               <td>{item.meetingId}</td>
               <td>
                 <MeetingRoomColorDiv>
@@ -184,7 +191,7 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
           previousLabel="<"
           nextLabel=">"
           breakLabel="..."
-          pageCount={5}
+          pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
@@ -219,11 +226,14 @@ function EntireMeeting({ setDetailModalOpen, detailModalOpen }) {
   );
 }
 const ViewMeeting = styled.div`
+  position: relative;
   width: 95%;
+  bottom: 0px;
   background: #ffffff;
   border-radius: 12px;
   background-color: white;
   padding: 20px;
+  height: 50%;
 `;
 const ViewMeetingHeader = styled.div`
   display: flex;
@@ -321,6 +331,9 @@ const MeetingRoomColor = styled.div`
   margin-right: 15px;
 `;
 const PagiNateDiv = styled.div`
+  position: absolute;
+  bottom: 5px;
+  left: 40%;
   .pagination {
     display: flex;
     justify-content: center;
